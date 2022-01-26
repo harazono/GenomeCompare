@@ -1,0 +1,84 @@
+.box {
+	display: flex;
+}
+.controlpanel{
+	margin: 10px auto;
+}
+.title{
+	/*background-color: #fff4f4;*/
+	height: 25px;
+}
+.minimap{
+	/*background-color: #fff9fc;*/
+	height: 25px;
+	margin: 5px;
+}
+.axis{
+	/*background-color: #fffcff;*/
+	height: 30px;
+}
+.sequence{
+	/*background-color: #fff4ff;*/
+	height: 25px;
+}
+.snp{
+	/*background-color: #fcf9ff;*/
+	height: 50px;
+}
+.repeat{
+	/*background-color: #f4f4ff;*/
+	overflow-y: scroll;
+	height: 150px;
+}
+.gene{
+	/*background-color: #f9fcff;*/
+	overflow-y: scroll;
+	height: 150px;
+}
+.chain_covered{
+	/*background-color: #f4ffff;*/
+	height: 50px;
+}
+.chain{
+	/*background-color: #f9fffc;*/
+	height: 150px;
+}
+/*
+.tooltip {
+	position: absolute;
+	text-align: left;
+	width: auto;
+	height: auto;
+	padding: 5px;
+	font: 12px;
+	background: white;
+	-webkit-box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8);
+	-moz-box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8);
+	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8);
+	visibility: hidden;
+}
+*/
+
+.gene_tooltip {
+	position: absolute;
+	text-align: left;
+	width: auto;
+	height: auto;
+	font: 10px;
+	background: white;
+	visibility: hidden;
+}
+
+html {
+ overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
