@@ -11,7 +11,7 @@
 .minimap{
 	/*background-color: #fff9fc;*/
 	height: 25px;
-	margin: 5px;
+	/*margin: 5px;*/
 }
 .axis{
 	/*background-color: #fffcff;*/
@@ -37,27 +37,28 @@
 }
 .chain_covered{
 	/*background-color: #f4ffff;*/
-	height: 50px;
+	height: 40px;
 }
 .chain{
 	/*background-color: #f9fffc;*/
 	height: 150px;
 }
-/*
-.tooltip {
-	position: absolute;
-	text-align: left;
-	width: auto;
-	height: auto;
-	padding: 5px;
-	font: 12px;
-	background: white;
-	-webkit-box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8);
-	-moz-box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8);
-	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.8);
-	visibility: hidden;
+
+.genome1 {
+	background-color:#f0f8ff;
 }
-*/
+
+.genome2 {
+	background-color:#ffffe0;
+}
+
+.div {
+	margin:  0;
+}
+
+.chain {
+	background-color: #dbffed;
+}
 
 .gene_tooltip {
 	position: absolute;
@@ -67,7 +68,41 @@
 	font: 10px;
 	background: white;
 	visibility: hidden;
+	font-family: 'Share Tech Mono', monospace;
 }
+.covered_range_tooltip {
+	position: absolute;
+	text-align: left;
+	width: auto;
+	height: auto;
+	font: 10px;
+	background: white;
+	visibility: hidden;
+	font-family: 'Share Tech Mono', monospace;
+}
+
+.snp_tooltip {
+	position: absolute;
+	text-align: left;
+	width: auto;
+	height: auto;
+	font: 10px;
+	background: white;
+	visibility: hidden;
+	font-family: 'Share Tech Mono', monospace;
+}
+
+.chain_rect_tooltip {
+	position: absolute;
+	text-align: left;
+	width: auto;
+	height: auto;
+	font: 10px;
+	background: white;
+	visibility: hidden;
+	font-family: 'Share Tech Mono', monospace;
+}
+
 
 html {
  overflow-y: scroll;

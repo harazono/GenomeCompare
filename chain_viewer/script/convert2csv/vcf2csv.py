@@ -13,10 +13,10 @@ def main():
 		for each_line in f.readlines():
 			tmp = [assembly]
 			line = each_line.decode()
-			chr = ""
 			if not line.startswith("#"):
+				chr = line.strip().split("\t")[0]
 				try:
-					chr = "chr" + str(int(line[0]))
+					chr = "chr" + str(int(chr))
 				except Exception as E:
 					chr = line[0]
 				line_replaced = [x.replace(",", "/") for x in line.strip().split("\t")]

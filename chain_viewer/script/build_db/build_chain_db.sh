@@ -14,3 +14,4 @@ sqlite3 $filename "CREATE TABLE IF NOT EXISTS chain( \
 );"
 
 sqlite3 -separator , $filename ".import ../csv/GRCh37ToGRCh38_chain.csv chain"
+sqlite3 -separator , $filename ".import ../csv/GRCh38ToGRCh37_chain.csv chain"

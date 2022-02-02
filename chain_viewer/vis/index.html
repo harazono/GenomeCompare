@@ -5,9 +5,12 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="styles.css">
-		<link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono|Montserrat" rel="stylesheet">
 		<title>ChainBrowser</title>
-		<!--クロスオリジンの設定をオフにする-->
+		<link rel="preconnect" href="https://fonts.googleapis.com"> 
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+		<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono|Montserrat" rel="stylesheet">
+
 	</head>
 	<body>
 		<div class="box" style="text-align: center;">
@@ -22,10 +25,10 @@
 							<td>Chromosome</td> <td><input type="text" id="genome1_chromosome" value="chr1"/></td>
 						</tr>
 						<tr>
-							<td>Begin</td> <td><input type="text" id="genome1_begin" value="925,950"/></td>
+							<td>Begin</td> <td><input type="text" id="genome1_begin" value="153,500"/></td>
 						</tr>
 						<tr>
-							<td>End</td> <td><input type="text" id="genome1_end" value="926,000"/></td>
+							<td>End</td> <td><input type="text" id="genome1_end" value="2,465,500"/></td>
 						</tr>
 					</table>
 					<input type="button" value="zoom in"  onclick="clickZoomInBtn(1)"/>
@@ -42,6 +45,40 @@
 					</div>
 				</div>
 			</div>
+			<div id="general_controlpanel3" class="controlpanel" mergin:>
+				<div style="background-color:#98fb98; padding: 3px">
+					<table>
+						<tr>
+							<td>Assembly</td> <td><input type="text" id="genome3_assembly" value="GRCh38"/></td>
+						</tr>
+						<tr>
+							<td>Chromosome</td> <td><input type="text" id="genome3_chromosome" value="chr1"/></td>
+						</tr>
+						<tr>
+							<td>Begin</td> <td><input type="text" id="genome3_begin" value="153,500"/></td>
+						</tr>
+						<tr>
+							<td>End</td> <td><input type="text" id="genome3_end" value="2,465,500"/></td>
+						</tr>
+					</table>
+					<input type="button" value="zoom in"  onclick="clickZoomInBtn(1) ; clickZoomInBtn(2) ; clickZoomInBtn(3) ;"/>
+					<input type="button" value="zoom out" onclick="clickZoomOutBtn(1); clickZoomOutBtn(2); clickZoomOutBtn(3);"/>
+					<p></p>
+					<input type="button" value="<<<" onclick="clickScrollBtn(1, -1/1); clickScrollBtn(2, -1/1); clickScrollBtn(3, -1/1)" />
+					<input type="button" value="<<"  onclick="clickScrollBtn(1, -1/2); clickScrollBtn(2, -1/2); clickScrollBtn(3, -1/2)" />
+					<input type="button" value="<"   onclick="clickScrollBtn(1, -1/4); clickScrollBtn(2, -1/4); clickScrollBtn(3, -1/4)" />
+					<input type="button" value=">"   onclick="clickScrollBtn(1, +1/4); clickScrollBtn(2, +1/4); clickScrollBtn(3, +1/4)" />
+					<input type="button" value=">>"  onclick="clickScrollBtn(1, +1/2); clickScrollBtn(2, +1/2); clickScrollBtn(3, +1/2)" />
+					<input type="button" value=">>>" onclick="clickScrollBtn(1, +1/1); clickScrollBtn(2, +1/1); clickScrollBtn(3, +1/1)" />
+					<div>
+						<input type="button" value="Align the scale" onclick="alignScale()" />
+					</div>
+					<div>
+						<input type="button" value="update" onclick="clickUpdateBtn(1); clickUpdateBtn(2); clickUpdateBtn(3)" />
+					</div>
+				</div>
+			</div>
+
 			<div id="general_controlpanel2" class="controlpanel">
 				<div style="background-color:#fafad2;padding: 3px">
 					Assembly 2
@@ -53,10 +90,10 @@
 							<td>Chromosome</td> <td><input type="text" id="genome2_chromosome" value="chr1"/></td>
 						</tr>
 						<tr>
-							<td>Begin</td> <td><input type="text" id="genome2_begin" value="16,777,160"/></td>
+							<td>Begin</td> <td><input type="text" id="genome2_begin" value="153,500"/></td>
 						</tr>
 						<tr>
-							<td>End</td> <td><input type="text" id="genome2_end" value="16,777,470"/></td>
+							<td>End</td> <td><input type="text" id="genome2_end" value="2,465,500"/></td>
 						</tr>
 					</table>
 					<input type="button" value="zoom in"  onclick="clickZoomInBtn(2)"/>
@@ -75,23 +112,25 @@
 			</div>
 		</div>
 
-		<div id="genome1_title"         class="title   genome1"       style="text-align: center;"></div>
-		<div id="genome1_minimap"       class="minimap genome1"       style="text-align: center;"></div>
-		<div id="genome1_axis"          class="axis genome1"          style="text-align: center;"></div>
-		<div id="genome1_sequence"      class="sequence genome1"      style="text-align: center;"></div>
-		<div id="genome1_snp"           class="snp genome1"           style="text-align: center;"></div>
-		<div id="genome1_repeat"        class="repeat genome1"        style="text-align: center;"></div>
-		<div id="genome1_gene"          class="gene genome1"          style="text-align: center;"></div>
-		<div id="genome1_chain_covered" class="chain_covered genome1" style="text-align: center;"></div>
-		<div id="chain"                 class="chain"                 style="text-align: center;"></div>
-		<div id="genome2_chain_covered" class="chain_covered genome2" style="text-align: center;"></div>
-		<div id="genome2_gene"          class="gene genome2"          style="text-align: center;"></div>
-		<div id="genome2_repeat"        class="repeat genome2"        style="text-align: center;"></div>
-		<div id="genome2_snp"           class="snp genome2"           style="text-align: center;"></div>
-		<div id="genome2_sequence"      class="sequence genome2"      style="text-align: center;"></div>
-		<div id="genome2_axis"          class="axis genome2"          style="text-align: center;"></div>
-		<div id="genome2_minimap"       class="minimap genome2"       style="text-align: center;"></div>
-		<div id="genome2_title"         class="title genome2"         style="text-align: center;"></div>
+		<div id="genome1_title"             class ="title   genome1"       style="text-align: center;"></div>
+		<div id="genome1_minimap"           class ="minimap genome1"       style="text-align: center;"></div>
+		<div id="genome1_axis"              class ="axis genome1"          style="text-align: center;"></div>
+		<div id="genome1_sequence"          class ="sequence genome1"      style="text-align: center;"></div>
+		<div id="genome1_snp"               class ="snp genome1"           style="text-align: center;"></div>
+		<div id="genome1_repeat"            class ="repeat genome1"        style="text-align: center;"></div>
+		<div id="genome1_gene"              class ="gene genome1"          style="text-align: center;"></div>
+		<div id="genome1_covered_as_source" class ="chain_covered genome1" style="text-align: center;"></div>
+		<div id="genome1_covered_as_target" class ="chain_covered genome1" style="text-align: center;"></div>
+		<div id="chain"                     class ="chain"                 style="text-align: center;"></div>
+		<div id="genome2_covered_as_target" class ="chain_covered genome2" style="text-align: center;"></div>
+		<div id="genome2_covered_as_source" class ="chain_covered genome2" style="text-align: center;"></div>
+		<div id="genome2_gene"              class ="gene genome2"          style="text-align: center;"></div>
+		<div id="genome2_repeat"            class ="repeat genome2"        style="text-align: center;"></div>
+		<div id="genome2_snp"               class ="snp genome2"           style="text-align: center;"></div>
+		<div id="genome2_sequence"          class ="sequence genome2"      style="text-align: center;"></div>
+		<div id="genome2_axis"              class ="axis genome2"          style="text-align: center;"></div>
+		<div id="genome2_minimap"           class ="minimap genome2"       style="text-align: center;"></div>
+		<div id="genome2_title"             class ="title genome2"         style="text-align: center;"></div>
 
 		<script type="text/javascript" src="svg-z-order.js"></script>
 		<script src="https://d3js.org/d3.v7.min.js"></script>
