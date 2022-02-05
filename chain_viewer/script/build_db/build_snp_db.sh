@@ -13,5 +13,5 @@ sqlite3 $filename "CREATE TABLE IF NOT EXISTS snp( \
 	info text \
 );"
 
-sqlite3 -separator , $filename ".import ../csv/GRCh37_clinver_2.csv snp"
-sqlite3 -separator , $filename ".import ../csv/GRCh38_clinver_2.csv snp"
+sqlite3 -separator , $filename ".import ../csv/GRCh37_clinver_3.csv snp"
+sqlite3 -separator , $filename ".import ../csv/GRCh38_clinver_3.csv snp"

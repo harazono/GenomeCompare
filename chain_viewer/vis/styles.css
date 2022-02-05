@@ -23,7 +23,7 @@
 }
 .snp{
 	/*background-color: #fcf9ff;*/
-	height: 50px;
+	height: 140px;
 }
 .repeat{
 	/*background-color: #f4f4ff;*/
@@ -60,7 +60,7 @@
 	background-color: #dbffed;
 }
 
-.gene_tooltip {
+.tooltip {
 	position: absolute;
 	text-align: left;
 	width: auto;
@@ -69,38 +69,7 @@
 	background: white;
 	visibility: hidden;
 	font-family: 'Share Tech Mono', monospace;
-}
-.covered_range_tooltip {
-	position: absolute;
-	text-align: left;
-	width: auto;
-	height: auto;
-	font: 10px;
-	background: white;
-	visibility: hidden;
-	font-family: 'Share Tech Mono', monospace;
-}
-
-.snp_tooltip {
-	position: absolute;
-	text-align: left;
-	width: auto;
-	height: auto;
-	font: 10px;
-	background: white;
-	visibility: hidden;
-	font-family: 'Share Tech Mono', monospace;
-}
-
-.chain_rect_tooltip {
-	position: absolute;
-	text-align: left;
-	width: auto;
-	height: auto;
-	font: 10px;
-	background: white;
-	visibility: hidden;
-	font-family: 'Share Tech Mono', monospace;
+	opacity: 0.8;
 }
 
 

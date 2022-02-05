@@ -24,8 +24,8 @@ let genome2_axis_svg              = d3.select("#genome2_axis").append("svg").att
 let genome1_sequence_svg          = d3.select("#genome1_sequence").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width);
 let genome2_sequence_svg          = d3.select("#genome2_sequence").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width);
 
-let genome1_snp_svg               = d3.select("#genome1_snp").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width);
-let genome2_snp_svg               = d3.select("#genome2_snp").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width);
+let genome1_snp_svg               = d3.select("#genome1_snp").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 500);
+let genome2_snp_svg               = d3.select("#genome2_snp").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 500);
 
 let genome1_repeat_svg            = d3.select("#genome1_repeat").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 500);
 let genome2_repeat_svg            = d3.select("#genome2_repeat").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 500);
@@ -43,7 +43,7 @@ let genome2_covered_as_target_svg = d3.select("#genome2_covered_as_target").appe
 let chain_svg = d3.select("#chain").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width);
 
 
-
+let tooltip = d3.select("body").append("div").attr("visibility", "hidden").classed("tooltip", true)
 
 
 
@@ -59,9 +59,15 @@ class GenomeCoordinateInfo {
 		this.NtSize          = NtSize;
 	}
 }
-let genome1;
-let genome2;
-let genome3;
+const initial_leftend  = 154776800
+const initial_rightend = 154776820
+const initial_length   = initial_rightend - initial_leftend
+const initial_center   = initial_leftend + initial_length / 2
+const initial_NtSize   = parseFloat(svg_canvas_width) / initial_length
+
+let genome1 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "GRCh38", "chrX", initial_NtSize)
+let genome2 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "GRCh37", "chr1", initial_NtSize)
+let genome3 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "", "chr3", initial_NtSize)
 
 function updateRegionInfo(){
 	const genome1_leftend         = parseInt(document.getElementById("genome1_begin").value.replace(/,/g, ''));
@@ -98,9 +104,26 @@ function updateRegionInfo(){
 
 }
 
+
+function reflectCoordinate(genomeID){
+	let genome
+	switch(genomeID){
+		case 1: genome = genome1;break;
+		case 2: genome = genome2;break;
+		case 3: genome = genome3;break;
+	}
+	d3.select(`#genome${genomeID}_assembly`).property("value", genome.genome_name)
+	d3.select(`#genome${genomeID}_chromosome`).property("value", genome.chromosome_name)
+	d3.select(`#genome${genomeID}_begin`).property("value", genome.leftend.toLocaleString())
+	d3.select(`#genome${genomeID}_end`)  .property("value", genome.rightend.toLocaleString())
+}
+reflectCoordinate(1)
+reflectCoordinate(2)
+reflectCoordinate(3)
+
+
 function updateScreen(genomeID){
 	if(genomeID === 1 || genomeID === 2){
-		updateRegionInfo(genomeID);
 		drawTitle(genomeID);
 		drawMinimap(genomeID);
 		drawAxis(genomeID);
@@ -109,7 +132,7 @@ function updateScreen(genomeID){
 		drawRepeat(genomeID);
 		drawGene(genomeID);
 		drawChainCovered(genomeID);
-		drawChain();
+		//drawChain();
 	}
 }
 d3.select(window)
@@ -142,57 +165,70 @@ function resizeGraphArea(){
 
 
 function clickZoomInBtn(genomeID){
+	updateRegionInfo();
 	let genome;
 	switch(genomeID){
-		case 1: genome = genome1;
-		case 2: genome = genome2;
-		case 3: genome = genome3;
+		case 1: genome = genome1;break;
+		case 2: genome = genome2;break;
+		case 3: genome = genome3;break;
 	}
 	const new_leftend  = Math.round((genome.leftend  + genome.center)/2)
 	const new_rightend = Math.round((genome.rightend + genome.center)/2)
-	document.getElementById(`genome${genomeID}_begin`).value = new_leftend.toLocaleString();
-	document.getElementById(`genome${genomeID}_end`).value   = new_rightend.toLocaleString();
-	updateRegionInfo();
+	//document.getElementById(`genome${genomeID}_begin`).value = new_leftend.toLocaleString();
+	//document.getElementById(`genome${genomeID}_end`).value   = new_rightend.toLocaleString();
+	genome.leftend = new_leftend;
+	genome.rightend = new_rightend;
+	reflectCoordinate(genomeID);
 	updateScreen(genomeID);
 	drawChain();
 
 }
 function clickZoomOutBtn(genomeID){
+	updateRegionInfo();
 	let genome;
 	switch(genomeID){
-		case 1: genome = genome1;
-		case 2: genome = genome2;
-		case 3: genome = genome3;
+		case 1: genome = genome1;break;
+		case 2: genome = genome2;break;
+		case 3: genome = genome3;break;
 	}
 	const new_leftend  = 2 * genome.leftend - genome.center
 	const new_rightend = 2 * genome.rightend - genome.center
-	document.getElementById(`genome${genomeID}_begin`).value = new_leftend.toLocaleString();
-	document.getElementById(`genome${genomeID}_end`).value   = new_rightend.toLocaleString();
-	updateRegionInfo();
+	//document.getElementById(`genome${genomeID}_begin`).value = new_leftend.toLocaleString();
+	//document.getElementById(`genome${genomeID}_end`).value   = new_rightend.toLocaleString();
+	genome.leftend = new_leftend;
+	genome.rightend = new_rightend;
+	reflectCoordinate(genomeID);
 	updateScreen(genomeID);
 	drawChain();
 }
 
 function clickScrollBtn(genomeID, distance){
+	updateRegionInfo();
 	let genome;
 	switch(genomeID){
-		case 1: genome = genome1;
-		case 2: genome = genome2;
-		case 3: genome = genome3;
+		case 1: genome = genome1;break;
+		case 2: genome = genome2;break;
+		case 3: genome = genome3;break;
 	}
+	const current_leftend = genome.leftend
 	const width = Math.round((genome.rightend - genome.center) * distance);
 	const new_leftend  = genome.leftend  + width;
 	const new_rightend = genome.rightend + width;
-	document.getElementById(`genome${genomeID}_begin`).value = new_leftend.toLocaleString();
-	document.getElementById(`genome${genomeID}_end`).value   = new_rightend.toLocaleString();
-	updateRegionInfo();
+	genome.leftend = new_leftend;
+	genome.rightend = new_rightend;
+	reflectCoordinate(genomeID);
 	updateScreen(genomeID);
 	drawChain();
 
 }
 function clickJumpBtn(genomeID, region){}
 function clickUpdateBtn(genomeID){
-	updateScreen(genomeID);
+	updateRegionInfo();
+	switch(genomeID){
+		case 1: updateScreen(1);break;
+		case 2: updateScreen(2);break;
+		case 3: updateScreen(1); updateScreen(2);break;
+	}
 	drawChain();
 }
 
@@ -353,7 +389,7 @@ function leftLinebreak(array, dy, x){
 	return string;
 }
 
-function drawOneSNP(canvas, genome, snp){
+function drawOneSNP(canvas, genome, snp, offset){
 	assembly = snp[0]
 	chr      = snp[1]
 	position = (parseInt(snp[2]) - genome.leftend) * genome.NtSize;
@@ -362,7 +398,7 @@ function drawOneSNP(canvas, genome, snp){
 	alt      = snp[5]
 	qual     = snp[6]
 	filter   = snp[7]
-	info     = snp[8]
+	info     = snp[8].replaceAll(";", "<br>")
 
 
 	let backgroundColor;
@@ -375,30 +411,30 @@ function drawOneSNP(canvas, genome, snp){
 		textColor = color["Other"][1];
 	}
 	const info_text = "<table>" + 
-		`<tr><th>assembly  </th><th>${assembly   } </th></tr>` +
-		`<tr><th>chromosome</th><th>${chromosome } </th></tr>` +
-		`<tr><th>position  </th><th>${snp[2]     } </th></tr>` +
-		`<tr><th>id        </th><th>${id         } </th></tr>` +
-		`<tr><th>ref       </th><th>${ref        } </th></tr>` +
-		`<tr><th>alt       </th><th>${alt        } </th></tr>` +
-		`<tr><th>qual      </th><th>${qual       } </th></tr>` +
-		`<tr><th>filter    </th><th>${filter     } </th></tr>` +
-		`<tr><th>info      </th><th>${info       } </th></tr>` +
+		`<tr><th>assembly  </th><th>${assembly } </th></tr>` +
+		`<tr><th>chromosome</th><th>${chr      } </th></tr>` +
+		`<tr><th>position  </th><th>${snp[2]   } </th></tr>` +
+		`<tr><th>id        </th><th>${id       } </th></tr>` +
+		`<tr><th>ref       </th><th>${ref      } </th></tr>` +
+		`<tr><th>alt       </th><th>${alt      } </th></tr>` +
+		`<tr><th>qual      </th><th>${qual     } </th></tr>` +
+		`<tr><th>filter    </th><th>${filter   } </th></tr>` +
+		`<tr><th>info      </th><th>${info     } </th></tr>` +
 		"</table>"
 
-	let tooltip = d3.select("body")
-	.append("div")
-	.classed("snp_tooltip", true)
-	.html(info_text)
+
+	const offset_px = offset * 20;
+	console.log(offset, offset_px)
 
 	canvas.append("rect")
 	.attr("x", position)
-	.attr("y", 0)
+	.attr("y", 0 + offset_px)
 	.attr("width", genome.NtSize)
 	.attr("height", 20)
 	.attr("style", `fill:${backgroundColor}`)
 	.on("mouseover", function(d) {
 		tooltip.style("visibility", "visible")
+		.html(info_text)
 		.style("left", d.screenX +  20 + "px")
 		.style("top",  d.screenY - 100 + "px")
 		.style("bottom", "auto")
@@ -411,7 +447,7 @@ function drawOneSNP(canvas, genome, snp){
 		.append("text")
 		.text(alt)
 		.attr("x", position + genome.NtSize / 2)
-		.attr("y", 10)
+		.attr("y", 10 + offset_px)
 		.attr("width", genome.NtSize)
 		.attr("height", 10)
 		.style('fill', textColor)
@@ -419,7 +455,11 @@ function drawOneSNP(canvas, genome, snp){
 		.attr("dominant-baseline", "central")
 		.attr("font-family", "Share Tech Mono")
 		.on("mouseover", function(d) {
-			tooltip.style("visibility", "visible");
+			tooltip.style("visibility", "visible")
+			.html(info_text)
+			.style("left", d.screenX +  20 + "px")
+			.style("top",  d.screenY - 100 + "px")
+			.style("bottom", "auto")
 		})
 		.on("mouseout", function(d) {
 			tooltip.style("visibility", "hidden");
@@ -444,6 +484,8 @@ async function drawSnp(genomeID){
 		const query = `http://localhost:8000/?table=snp&assembly=${genome.genome_name}&chr=${genome.chromosome_name}&start=${genome.leftend}&end=${genome.rightend}`;
 		const res = await fetch(query, {method: 'GET'});
 		const data = await res.json();//.then(response => response.json()).then(data => {return data.length}).catch((err) => {console.log(err)});
+		let vis_index = Array(genome.rightend - genome.leftend)
+		vis_index.fill(0)
 		for(let i = 0; i < data.length; i++){
 			currentSNP = data[i];
 			const position = parseInt(currentSNP[2]);
@@ -453,7 +495,9 @@ async function drawSnp(genomeID){
 			const dx = position - genome.leftend;
 			const width = genome.NtSize;
 			//drawOneSNP(canvas, dx * width, 10, width, alt, currentSNP);
-			drawOneSNP(canvas, genome, data[i]);
+			console.log(data[i][2] - genome.leftend, vis_index[data[i][2] - genome.leftend])
+			drawOneSNP(canvas, genome, data[i], vis_index[data[i][2] - genome.leftend]);
+			vis_index[data[i][2] - genome.leftend]++;
 		}
 
 	}else{
@@ -472,20 +516,20 @@ function drawOneRepeat(canvas, genome, repeat, showText){
 	const repeat_begin  = (parseInt(repeat[2]) - genome.leftend) * genome.NtSize;
 	const repeat_end    = (parseInt(repeat[3]) - genome.leftend) * genome.NtSize;
 	const repeat_name   = repeat[4];
-	const repeat_strand = repeat[5];
+	const repeat_strand = repeat[6];
 	const width = repeat_end - repeat_begin;
 	const lineIndex = parseInt(repeat[7]) * 10;
-	const info_text = repeat_name
 
-	let tooltip = canvas
-	.append("text")
-	.attr("x", repeat_begin)
-	.attr("y", lineIndex + 2)
-	.attr("width", width)
-	.attr("height", 3)
-	.style("visibility", "hidden")
-	.style("background-color", "orange")
-	.html(info_text)
+	const length = parseInt(repeat[3]) - parseInt(repeat[2])
+	const info_text = "<table>" + 
+	`<tr><th>repeat name </th><th> ${repeat_name   } </th></tr> ` +
+	`<tr><th>start       </th><th> ${repeat[2]     } </th></tr> ` +
+	`<tr><th>end         </th><th> ${repeat[3]     } </th></tr> ` +
+	`<tr><th>length      </th><th> ${length        } </th></tr> ` +
+	`<tr><th>strand      </th><th> ${repeat_strand } </th></tr> ` +
+	"</table>"
+
+
 
 	let main_line = canvas
 	.append("rect")
@@ -494,18 +538,16 @@ function drawOneRepeat(canvas, genome, repeat, showText){
 	.attr("width", width)
 	.attr("height", 5)
 	.style("fill", "#4161e1")
-	if(showText != true){
-		main_line
-		.on("mouseover", function(d) {
-			let x = d3.pointer(d)[0];
-			tooltip.style("visibility", "visible")
-			.attr("x", x)
-			.attr("y", lineIndex)
-		})
-		.on("mouseout", function(d) {
-			tooltip.style("visibility", "hidden");
-		})
-	}
+	.on("mouseover", function(d) {
+		tooltip.style("visibility", "visible")
+		.html(info_text)
+		.style("left", d.screenX +  20 + "px")
+		.style("top",  d.screenY - 100 + "px")
+		.style("bottom", "auto")
+	})
+	.on("mouseout", function(d) {
+		tooltip.style("visibility", "hidden");
+	})
 	canvas
 	.append("line")
 	.attr("x1",repeat_begin)
@@ -513,7 +555,17 @@ function drawOneRepeat(canvas, genome, repeat, showText){
 	.attr("y1",lineIndex - 5)
 	.attr("y2",lineIndex + 8)
 	.attr("stroke-width", 1)
-	.attr("stroke","#dc143c");
+	.attr("stroke","#dc143c")
+	.on("mouseover", function(d) {
+		tooltip.style("visibility", "visible")
+		.html(info_text)
+		.style("left", d.screenX +  20 + "px")
+		.style("top",  d.screenY - 100 + "px")
+		.style("bottom", "auto")
+	})
+	.on("mouseout", function(d) {
+		tooltip.style("visibility", "hidden");
+	})
 
 	canvas
 	.append("line")
@@ -523,17 +575,17 @@ function drawOneRepeat(canvas, genome, repeat, showText){
 	.attr("y1",lineIndex - 5)
 	.attr("y2",lineIndex + 8)
 	.attr("stroke-width", 1)
-	.attr("stroke","#dc143c");
-
-	if(showText == true){
-		canvas
-		.append("text")
-		.text(repeat_name)
-		.attr("x", repeat_begin + width / 2)
-		.attr("y", lineIndex + 20)
-		.attr("text-anchor", "middle")
-		.attr("dominant-baseline", "central");
-	}
+	.attr("stroke","#dc143c")
+	.on("mouseover", function(d) {
+		tooltip.style("visibility", "visible")
+		.html(info_text)
+		.style("left", d.screenX +  20 + "px")
+		.style("top",  d.screenY - 100 + "px")
+		.style("bottom", "auto")
+	})
+	.on("mouseout", function(d) {
+		tooltip.style("visibility", "hidden");
+	})
 }
 
 async function drawRepeat(genomeID){
@@ -560,6 +612,19 @@ async function drawRepeat(genomeID){
 		drawOneRepeat(canvas, genome, currentRepeat, showFlag)
 	}
 }
+
+
+function appendTextbox(text, classedAS, id, x, y){
+	let tooltip = d3.select("body")
+	.append("div")
+	.classed(classedAS, true)
+	.html(text)
+	.style("visibility", "visible")
+	.style("left", x + "px")
+	.style("top",  y + "px")
+	.style("bottom", "auto")
+}
+
 
 function drawOneTranscript(canvas, genome, transcript){
 	//console.log(canvas, genome, transcript)
@@ -593,14 +658,6 @@ function drawOneTranscript(canvas, genome, transcript){
 		`<tr><th>transcript_biotype </th><th> ${transcript_biotype            } </th></tr>` +
 		"</table>"
 
-
-
-	let tooltip = d3.select("body")
-	.append("div")
-	.classed("gene_tooltip", true)
-	.html(info_text)
-
-
 	canvas
 	.append("line")
 	.attr("x1",start)
@@ -611,7 +668,8 @@ function drawOneTranscript(canvas, genome, transcript){
 	.attr("stroke","#0e9aa7")
 	.on("mouseover", function(d) {
 		tooltip.style("visibility", "visible")
-		.style("left", d.screenX + 20  + "px")
+		.html(info_text)
+		.style("left", d.screenX +  20 + "px")
 		.style("top",  d.screenY - 100 + "px")
 		.style("bottom", "auto")
 	})
@@ -631,6 +689,7 @@ function drawOneTranscript(canvas, genome, transcript){
 		.style("fill", "#4161e1")
 		.on("mouseover", function(d) {
 			tooltip.style("visibility", "visible")
+			.html(info_text)
 			.style("left", d.screenX +  20 + "px")
 			.style("top",  d.screenY - 100 + "px")
 			.style("bottom", "auto")
@@ -639,8 +698,6 @@ function drawOneTranscript(canvas, genome, transcript){
 			tooltip.style("visibility", "hidden");
 		})
 	}
-
-
 }
 
 async function drawGene(genomeID){
@@ -704,11 +761,6 @@ function drawOneCoveredAsSourceRange(genomeID, chain){
 		`<tr><th>length           </th><th>${length}</th></tr>` +
 		"</table>"
 
-	let tooltip = d3.select("body")
-	.append("div")
-	.classed("covered_range_tooltip", true)
-	.html(info_text)
-
 	let offset = 0
 	let color;//inter chainかintra chainかで色を分ける
 	if(target_chromosome === opposite_genome.chromosome_name){
@@ -728,13 +780,15 @@ function drawOneCoveredAsSourceRange(genomeID, chain){
 	.attr("stroke", color)
 	.on("mouseover", function(d) {
 		tooltip.style("visibility", "visible")
-		.style("left", d.screenX + 20  + "px")
+		.html(info_text)
+		.style("left", d.screenX +  20 + "px")
 		.style("top",  d.screenY - 100 + "px")
 		.style("bottom", "auto")
 	})
 	.on("mouseout", function(d) {
 		tooltip.style("visibility", "hidden");
 	})
+
 	canvas.append("line")
 	.attr("x1", source_start)
 	.attr("x2", source_start)
@@ -744,13 +798,15 @@ function drawOneCoveredAsSourceRange(genomeID, chain){
 	.attr("stroke", "#dc143c")
 	.on("mouseover", function(d) {
 		tooltip.style("visibility", "visible")
-		.style("left", d.screenX + 20  + "px")
+		.html(info_text)
+		.style("left", d.screenX +  20 + "px")
 		.style("top",  d.screenY - 100 + "px")
 		.style("bottom", "auto")
 	})
 	.on("mouseout", function(d) {
 		tooltip.style("visibility", "hidden");
 	})
+
 	canvas.append("line")
 	.attr("x1", source_end)
 	.attr("x2", source_end)
@@ -760,7 +816,8 @@ function drawOneCoveredAsSourceRange(genomeID, chain){
 	.attr("stroke", "#dc143c")
 	.on("mouseover", function(d) {
 		tooltip.style("visibility", "visible")
-		.style("left", d.screenX + 20  + "px")
+		.html(info_text)
+		.style("left", d.screenX +  20 + "px")
 		.style("top",  d.screenY - 100 + "px")
 		.style("bottom", "auto")
 	})
@@ -805,10 +862,6 @@ function drawOneCoveredAsTargetRange(genomeID, chain){
 		`<tr><th>length           </th><th>${length}</th></tr>` +
 		"</table>"
 
-	let tooltip = d3.select("body")
-	.append("div")
-	.classed("covered_range_tooltip", true)
-	.html(info_text)
 
 	let offset = 0
 	let color;//inter chainかintra chainかで色を分ける
@@ -829,13 +882,15 @@ function drawOneCoveredAsTargetRange(genomeID, chain){
 	.attr("stroke", color)
 	.on("mouseover", function(d) {
 		tooltip.style("visibility", "visible")
-		.style("left", d.screenX + 20  + "px")
+		.html(info_text)
+		.style("left", d.screenX +  20 + "px")
 		.style("top",  d.screenY - 100 + "px")
 		.style("bottom", "auto")
 	})
 	.on("mouseout", function(d) {
 		tooltip.style("visibility", "hidden");
 	})
+
 	canvas.append("line")
 	.attr("x1", target_start)
 	.attr("x2", target_start)
@@ -845,13 +900,15 @@ function drawOneCoveredAsTargetRange(genomeID, chain){
 	.attr("stroke", "#dc143c")
 	.on("mouseover", function(d) {
 		tooltip.style("visibility", "visible")
-		.style("left", d.screenX + 20  + "px")
+		.html(info_text)
+		.style("left", d.screenX +  20 + "px")
 		.style("top",  d.screenY - 100 + "px")
 		.style("bottom", "auto")
 	})
 	.on("mouseout", function(d) {
 		tooltip.style("visibility", "hidden");
 	})
+
 	canvas.append("line")
 	.attr("x1", target_end)
 	.attr("x2", target_end)
@@ -861,7 +918,8 @@ function drawOneCoveredAsTargetRange(genomeID, chain){
 	.attr("stroke", "#dc143c")
 	.on("mouseover", function(d) {
 		tooltip.style("visibility", "visible")
-		.style("left", d.screenX + 20  + "px")
+		.html(info_text)
+		.style("left", d.screenX +  20 + "px")
 		.style("top",  d.screenY - 100 + "px")
 		.style("bottom", "auto")
 	})
@@ -943,11 +1001,6 @@ function drawOneChainRectangle(chain){
 		"</table>"
 
 
-	let tooltip = d3.select("body")
-	.append("div")
-	.classed("chain_rect_tooltip", true)
-	.html(info_text)
-
 	let source_start_x, source_start_y
 	let source_end_x,   source_end_y
 	let target_start_x, target_start_y
@@ -980,7 +1033,8 @@ function drawOneChainRectangle(chain){
 	.attr("stroke","#ff69b4")
 	.on("mouseover", function(d) {
 		tooltip.style("visibility", "visible")
-		.style("left", d.screenX + 20  + "px")
+		.html(info_text)
+		.style("left", d.screenX +  20 + "px")
 		.style("top",  d.screenY - 100 + "px")
 		.style("bottom", "auto")
 	})
@@ -992,8 +1046,8 @@ function drawOneChainRectangle(chain){
 
 async function drawChain(){
 	chain_svg.selectAll('polygon').remove();
-	const chain_rectangle_area_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}&source-start=${genome1.leftend}&source-end=${genome1.rightend}&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}&target-start=${genome2.leftend}&target-end=${genome2.rightend}`;
-	//const chain_rectangle_area_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}`;
+	//const chain_rectangle_area_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}&source-start=${genome1.leftend}&source-end=${genome1.rightend}&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}&target-start=${genome2.leftend}&target-end=${genome2.rightend}`;
+	const chain_rectangle_area_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}`;
 
 	const chain_rectangle_area_res   = await fetch(chain_rectangle_area_query, {method: 'GET'});
 	const chain_rectangle_area_data  = await chain_rectangle_area_res.json();

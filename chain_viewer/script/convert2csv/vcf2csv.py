@@ -19,7 +19,10 @@ def main():
 					chr = "chr" + str(int(chr))
 				except Exception as E:
 					chr = line[0]
+				if chr in ["X", "Y", "M"]:
+					chr = "chr" + chr
 				line_replaced = [x.replace(",", "/") for x in line.strip().split("\t")]
+				line_replaced[1] = str(int(line_replaced[1]) - 1) #Since VCF4.2 adopts 1-origin coordinate system
 				tmp.extend(line_replaced)
 				tmp[1] = chr
 				print(",".join(tmp))
