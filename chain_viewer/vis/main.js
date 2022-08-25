@@ -59,13 +59,13 @@ class GenomeCoordinateInfo {
 		this.NtSize          = NtSize;
 	}
 }
-const initial_leftend  = 154776800
-const initial_rightend = 154776820
+const initial_leftend  = 1001000
+const initial_rightend = 1011000
 const initial_length   = initial_rightend - initial_leftend
 const initial_center   = initial_leftend + initial_length / 2
 const initial_NtSize   = parseFloat(svg_canvas_width) / initial_length
 
-let genome1 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "GRCh38", "chrX", initial_NtSize)
+let genome1 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "GRCh38", "chr1", initial_NtSize)
 let genome2 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "GRCh37", "chr1", initial_NtSize)
 let genome3 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "", "chr3", initial_NtSize)
 
@@ -236,8 +236,10 @@ function alignScale(){
 	updateRegionInfo();
 	document.getElementById("genome1_begin").value = genome3.leftend.toLocaleString();
 	document.getElementById("genome1_end").value   = genome3.rightend.toLocaleString();
+	document.getElementById("genome1_chromosome").value   = genome3.chromosome_name.toLocaleString();
 	document.getElementById("genome2_begin").value = genome3.leftend.toLocaleString();
 	document.getElementById("genome2_end").value   = genome3.rightend.toLocaleString();
+	document.getElementById("genome2_chromosome").value   = genome3.chromosome_name.toLocaleString();
 	updateRegionInfo();
 	updateScreen(1);
 	updateScreen(2);
