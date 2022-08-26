@@ -59,7 +59,7 @@ class GenomeCoordinateInfo {
 		this.NtSize          = NtSize;
 	}
 }
-const initial_leftend  = 1001000
+const initial_leftend  = 0
 const initial_rightend = 1011000
 const initial_length   = initial_rightend - initial_leftend
 const initial_center   = initial_leftend + initial_length / 2
@@ -67,7 +67,7 @@ const initial_NtSize   = parseFloat(svg_canvas_width) / initial_length
 
 let genome1 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "GRCh38", "chr1", initial_NtSize)
 let genome2 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "GRCh37", "chr1", initial_NtSize)
-let genome3 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "", "chr3", initial_NtSize)
+let genome3 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "", "chr1", initial_NtSize)
 
 function updateRegionInfo(){
 	const genome1_leftend         = parseInt(document.getElementById("genome1_begin").value.replace(/,/g, ''));
@@ -144,7 +144,7 @@ d3.select(window)
 
 
 function resizeGraphArea(){
-	svg_canvas_width = window.innerWidth * 0.90;
+	svg_canvas_width = window.innerWidth * 1;
 	svg_canvas_height = Math.min(svg_canvas_width / aspect, 1500);
 	if (svg_canvas_height >= 1200 && svg_canvas_height < 1500) {
 		svg_canvas_height = 1200
@@ -172,8 +172,8 @@ function clickZoomInBtn(genomeID){
 		case 2: genome = genome2;break;
 		case 3: genome = genome3;break;
 	}
-	const new_leftend  = Math.round((genome.leftend  + genome.center)/2)
-	const new_rightend = Math.round((genome.rightend + genome.center)/2)
+	const new_leftend  = Math.round((genome.leftend  + genome.center)/4);
+	const new_rightend = Math.round((genome.rightend + genome.center)/4);
 	//document.getElementById(`genome${genomeID}_begin`).value = new_leftend.toLocaleString();
 	//document.getElementById(`genome${genomeID}_end`).value   = new_rightend.toLocaleString();
 	genome.leftend = new_leftend;
@@ -191,11 +191,11 @@ function clickZoomOutBtn(genomeID){
 		case 2: genome = genome2;break;
 		case 3: genome = genome3;break;
 	}
-	const new_leftend  = 2 * genome.leftend - genome.center
-	const new_rightend = 2 * genome.rightend - genome.center
+	const new_leftend  = 4 * genome.leftend  - genome.center;
+	const new_rightend = 4 * genome.rightend - genome.center;
 	//document.getElementById(`genome${genomeID}_begin`).value = new_leftend.toLocaleString();
 	//document.getElementById(`genome${genomeID}_end`).value   = new_rightend.toLocaleString();
-	genome.leftend = new_leftend;
+	genome.leftend  = new_leftend;
 	genome.rightend = new_rightend;
 	reflectCoordinate(genomeID);
 	updateScreen(genomeID);
@@ -731,6 +731,7 @@ async function drawGene(genomeID){
 
 
 function drawOneCoveredAsSourceRange(genomeID, chain){
+	//covered as sourceで64,000個くらいオブジェクトを生成してるが、絶対そんなにいらない。
 	let canvas
 	let this_genome
 	let opposite_genome
@@ -790,6 +791,7 @@ function drawOneCoveredAsSourceRange(genomeID, chain){
 	.on("mouseout", function(d) {
 		tooltip.style("visibility", "hidden");
 	})
+	.classed("covered_range_tooltip", true)
 
 	canvas.append("line")
 	.attr("x1", source_start)
@@ -808,6 +810,8 @@ function drawOneCoveredAsSourceRange(genomeID, chain){
 	.on("mouseout", function(d) {
 		tooltip.style("visibility", "hidden");
 	})
+	.classed("covered_range_tooltip", true)
+
 
 	canvas.append("line")
 	.attr("x1", source_end)
@@ -826,6 +830,8 @@ function drawOneCoveredAsSourceRange(genomeID, chain){
 	.on("mouseout", function(d) {
 		tooltip.style("visibility", "hidden");
 	})
+	.classed("covered_range_tooltip", true)
+
 }
 
 function drawOneCoveredAsTargetRange(genomeID, chain){
@@ -892,6 +898,7 @@ function drawOneCoveredAsTargetRange(genomeID, chain){
 	.on("mouseout", function(d) {
 		tooltip.style("visibility", "hidden");
 	})
+	.classed("covered_range_tooltip", true)
 
 	canvas.append("line")
 	.attr("x1", target_start)
@@ -910,6 +917,7 @@ function drawOneCoveredAsTargetRange(genomeID, chain){
 	.on("mouseout", function(d) {
 		tooltip.style("visibility", "hidden");
 	})
+	.classed("covered_range_tooltip", true)
 
 	canvas.append("line")
 	.attr("x1", target_end)
@@ -928,6 +936,7 @@ function drawOneCoveredAsTargetRange(genomeID, chain){
 	.on("mouseout", function(d) {
 		tooltip.style("visibility", "hidden");
 	})
+	.classed("covered_range_tooltip", true)
 }
 
 
@@ -945,8 +954,18 @@ async function drawChainCovered(genomeID){
 		const covered_range_on_genome1_res   = await fetch(covered_range_on_genome1_query, {method: 'GET'});
 		const covered_range_on_genome1_data  = await covered_range_on_genome1_res.json();
 		for (let i = 0; i < covered_range_on_genome1_data.length; i++){
-			drawOneCoveredAsSourceRange(1, covered_range_on_genome1_data[i]);
-			//drawOneCoveredAsTargetRange(1, covered_range_on_genome1_data[i])
+			//ここで全部描画するのが良くない。描画領域に合わせて描画するべき。
+			let chain   = covered_range_on_genome1_data[i];
+			const left  = parseInt(chain[2]);//座標, not pixcel
+			const right = parseInt(chain[3]);//座標, not pixcel
+			// left > genome1.rightend or right < canvas.leftendだったら描画しない。
+			//console.log(left, genome1.leftend,left > genome1.leftend, right, genome1.rightend, right < genome1.rightend);
+			if (left > genome1.rightend || right < genome1.leftend){
+				//描画しない
+			}else{
+				drawOneCoveredAsSourceRange(1, covered_range_on_genome1_data[i]);
+
+			}
 		}
 	}else{
 		[genome2_covered_as_source_svg, genome2_covered_as_target_svg].map(function(x){
@@ -960,15 +979,18 @@ async function drawChainCovered(genomeID){
 		const covered_range_on_genome2_res   = await fetch(covered_range_on_genome2_query, {method: 'GET'});
 		const covered_range_on_genome2_data  = await covered_range_on_genome2_res.json();
 		for (let i = 0; i < covered_range_on_genome2_data.length; i++){
-			//drawOneCoveredAsSourceRange(2, covered_range_on_genome2_data[i]);
-			drawOneCoveredAsTargetRange(2, covered_range_on_genome2_data[i])
+			let chain   = covered_range_on_genome2_data[i];
+			const left  = parseInt(chain[6]);
+			const right = parseInt(chain[7]);
+			if (left < genome2.rightend && right > genome2.leftend){
+				drawOneCoveredAsTargetRange(2, covered_range_on_genome2_data[i])
+			}
 		}
 	}
 }
 
 function drawOneChainRectangle(chain){
 	//console.log(chain)
-
 	const source_assembly   = chain[0]
 	const source_chromosome = chain[1]
 	const target_assembly   = chain[4]
@@ -1043,6 +1065,7 @@ function drawOneChainRectangle(chain){
 	.on("mouseout", function(d) {
 		tooltip.style("visibility", "hidden");
 	})
+	.classed("covered_range_tooltip", true)
 }
 
 
