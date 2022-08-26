@@ -62,7 +62,18 @@ class SQLite3Handler(s.SimpleHTTPRequestHandler):
 
 			elif table in ("sequence"):
 				chr_len = sequence[assembly][chr]["length"]
-				seq = sequence[assembly][chr]["sequence"][int(start):int(end)]
+				seq = None
+				if int(start) >= 0 and int(end) < len(sequence[assembly][chr]["sequence"]):
+					seq = sequence[assembly][chr]["sequence"][int(start):int(end)]
+				elif int(start) < 0 and int(end) < len(sequence[assembly][chr]["sequence"]):#左端に不足が生じる時
+					umeawase = "x" * abs(int(start))
+					seq = umeawase + sequence[assembly][chr]["sequence"][:int(end)]
+				elif int(start) >= 0 and int(end) > len(sequence[assembly][chr]["sequence"]):
+					umeawase = "x" * (int(end) - len(sequence[assembly][chr]["sequence"]))
+					seq = sequence[assembly][chr]["sequence"][int(start):] + umeawase
+				elif int(start) < 0 and int(end) > len(sequence[assembly][chr]["sequence"]):
+					seq = "Too long"
+
 				result = (chr_len, seq)
 
 			elif table in ("snp"):

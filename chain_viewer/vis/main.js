@@ -60,7 +60,7 @@ class GenomeCoordinateInfo {
 	}
 }
 const initial_leftend  = 0
-const initial_rightend = 1011000
+const initial_rightend = 10
 const initial_length   = initial_rightend - initial_leftend
 const initial_center   = initial_leftend + initial_length / 2
 const initial_NtSize   = parseFloat(svg_canvas_width) / initial_length
@@ -174,11 +174,10 @@ function clickZoomInBtn(genomeID){
 	}
 	const new_leftend  = Math.round((genome.leftend  + genome.center)/4);
 	const new_rightend = Math.round((genome.rightend + genome.center)/4);
-	//document.getElementById(`genome${genomeID}_begin`).value = new_leftend.toLocaleString();
-	//document.getElementById(`genome${genomeID}_end`).value   = new_rightend.toLocaleString();
-	genome.leftend = new_leftend;
+	genome.leftend  = new_leftend;
 	genome.rightend = new_rightend;
 	reflectCoordinate(genomeID);
+	updateRegionInfo();
 	updateScreen(genomeID);
 	drawChain();
 
@@ -191,13 +190,14 @@ function clickZoomOutBtn(genomeID){
 		case 2: genome = genome2;break;
 		case 3: genome = genome3;break;
 	}
-	const new_leftend  = 4 * genome.leftend  - genome.center;
-	const new_rightend = 4 * genome.rightend - genome.center;
+	const new_leftend  = Math.round(genome.center - 4 * (genome.center - genome.leftend));
+	const new_rightend = Math.round(genome.center + 4 * (genome.rightend - genome.center));
 	//document.getElementById(`genome${genomeID}_begin`).value = new_leftend.toLocaleString();
 	//document.getElementById(`genome${genomeID}_end`).value   = new_rightend.toLocaleString();
 	genome.leftend  = new_leftend;
 	genome.rightend = new_rightend;
 	reflectCoordinate(genomeID);
+	updateRegionInfo();
 	updateScreen(genomeID);
 	drawChain();
 }
@@ -368,6 +368,7 @@ async function drawSequence(genomeID){
 		const data = await res.json();//.then(response => response.json()).then(data => {return data.length}).catch((err) => {console.log(err)});
 		const seq = data[1];
 		const width = genome.NtSize;
+		console.log(data);
 		canvas.selectAll("text").remove();
 		for(let i = 0; i < seq.length; i++){
 			drawOneCharacter(canvas, i * width, 10, width, seq[i]);
@@ -487,7 +488,18 @@ async function drawSnp(genomeID){
 		const res = await fetch(query, {method: 'GET'});
 		const data = await res.json();//.then(response => response.json()).then(data => {return data.length}).catch((err) => {console.log(err)});
 		let vis_index = Array(genome.rightend - genome.leftend)
-		vis_index.fill(0)
+		vis_index.fill(0);
+		if (data.length == 0){
+			canvas
+				.append("text")
+				.text("No SNP in this range")
+				.attr("x", svg_canvas_width / 2)
+				.attr("y", 5)
+				.attr("text-anchor", "middle")
+				.attr("dominant-baseline", "central")
+			return;
+		}
+
 		for(let i = 0; i < data.length; i++){
 			currentSNP = data[i];
 			const position = parseInt(currentSNP[2]);
@@ -606,7 +618,18 @@ async function drawRepeat(genomeID){
 	const query = `http://localhost:8000/?table=repeat&assembly=${genome.genome_name}&chr=${genome.chromosome_name}&start=${genome.leftend}&end=${genome.rightend}`;
 	const res = await fetch(query, {method: 'GET'});
 	const data = await res.json();//.then(response => response.json()).then(data => {return data.length}).catch((err) => {console.log(err)});
-	const showFlag = data.length < 10
+	const showFlag = data.length < 10;
+	if (data.length == 0){
+		canvas
+			.append("text")
+			.text("No repeat in this range")
+			.attr("x", svg_canvas_width / 2)
+			.attr("y", 5)
+			.attr("text-anchor", "middle")
+			.attr("dominant-baseline", "central")
+		return;
+	}
+
 	for(let i = 0; i < data.length; i++){
 		currentRepeat = data[i];
 		//console.log(currentRepeat);
@@ -720,7 +743,17 @@ async function drawGene(genomeID){
 		const query = `http://localhost:8000/?table=transcript&assembly=${genome.genome_name}&chr=${genome.chromosome_name}&start=${genome.leftend}&end=${genome.rightend}`;
 		const res = await fetch(query, {method: 'GET'});
 		const data = await res.json();//.then(response => response.json()).then(data => {return data.length}).catch((err) => {console.log(err)});
-		//console.log(data.length);
+		if (data.length == 0){
+			canvas
+				.append("text")
+				.text("No Gene in this range")
+				.attr("x", svg_canvas_width / 2)
+				.attr("y", 5)
+				.attr("text-anchor", "middle")
+				.attr("dominant-baseline", "central")
+			return;
+		}
+
 		for(let i = 0; i < data.length; i++){
 			currentTranscript = data[i];
 			//console.log(currentTranscript);
@@ -953,6 +986,17 @@ async function drawChainCovered(genomeID){
 		const covered_range_on_genome1_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}`;
 		const covered_range_on_genome1_res   = await fetch(covered_range_on_genome1_query, {method: 'GET'});
 		const covered_range_on_genome1_data  = await covered_range_on_genome1_res.json();
+		if (covered_range_on_genome1_data.length == 0){
+			canvas
+				.append("text")
+				.text("No chain in this range")
+				.attr("x", svg_canvas_width / 2)
+				.attr("y", 5)
+				.attr("text-anchor", "middle")
+				.attr("dominant-baseline", "central")
+			return;
+		}
+
 		for (let i = 0; i < covered_range_on_genome1_data.length; i++){
 			//ここで全部描画するのが良くない。描画領域に合わせて描画するべき。
 			let chain   = covered_range_on_genome1_data[i];
@@ -978,6 +1022,17 @@ async function drawChainCovered(genomeID){
 		const covered_range_on_genome2_query = `http://localhost:8000/?table=chain&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}`;
 		const covered_range_on_genome2_res   = await fetch(covered_range_on_genome2_query, {method: 'GET'});
 		const covered_range_on_genome2_data  = await covered_range_on_genome2_res.json();
+		if (covered_range_on_genome2_data.length == 0){
+			canvas
+				.append("text")
+				.text("No chain in this range")
+				.attr("x", svg_canvas_width / 2)
+				.attr("y", 5)
+				.attr("text-anchor", "middle")
+				.attr("dominant-baseline", "central")
+			return;
+		}
+
 		for (let i = 0; i < covered_range_on_genome2_data.length; i++){
 			let chain   = covered_range_on_genome2_data[i];
 			const left  = parseInt(chain[6]);
