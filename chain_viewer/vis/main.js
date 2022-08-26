@@ -8,7 +8,7 @@ const color = {
 };
 
 
-let svg_canvas_width = window.innerWidth * 0.9;
+let svg_canvas_width = window.innerWidth * 0.98;
 let aspect = 12/4;
 svg_canvas_height = svg_canvas_width/aspect;
 
@@ -27,8 +27,8 @@ let genome2_sequence_svg          = d3.select("#genome2_sequence").append("svg")
 let genome1_snp_svg               = d3.select("#genome1_snp").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 500);
 let genome2_snp_svg               = d3.select("#genome2_snp").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 500);
 
-let genome1_repeat_svg            = d3.select("#genome1_repeat").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 500);
-let genome2_repeat_svg            = d3.select("#genome2_repeat").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 500);
+let genome1_repeat_svg            = d3.select("#genome1_repeat").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 50);
+let genome2_repeat_svg            = d3.select("#genome2_repeat").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 50);
 
 let genome1_gene_svg              = d3.select("#genome1_gene").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 500);
 let genome2_gene_svg              = d3.select("#genome2_gene").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", 500);
@@ -59,8 +59,8 @@ class GenomeCoordinateInfo {
 		this.NtSize          = NtSize;
 	}
 }
-const initial_leftend  = 0
-const initial_rightend = 10
+const initial_leftend  = 1000000
+const initial_rightend = 2000000
 const initial_length   = initial_rightend - initial_leftend
 const initial_center   = initial_leftend + initial_length / 2
 const initial_NtSize   = parseFloat(svg_canvas_width) / initial_length
@@ -144,7 +144,7 @@ d3.select(window)
 
 
 function resizeGraphArea(){
-	svg_canvas_width = window.innerWidth * 1;
+	svg_canvas_width = window.innerWidth * 0.98;
 	svg_canvas_height = Math.min(svg_canvas_width / aspect, 1500);
 	if (svg_canvas_height >= 1200 && svg_canvas_height < 1500) {
 		svg_canvas_height = 1200
@@ -378,7 +378,7 @@ async function drawSequence(genomeID){
 		.append("text")
 		.text("Zoom to describe a sequence")
 		.attr("x", svg_canvas_width / 2)
-		.attr("y", 5)
+		.attr("y", 10)
 		.attr("text-anchor", "middle")
 		.attr("dominant-baseline", "central")
 	}
@@ -519,7 +519,7 @@ async function drawSnp(genomeID){
 		.append("text")
 		.text("Zoom to describe SNP/SNV")
 		.attr("x", svg_canvas_width / 2)
-		.attr("y", 5)
+		.attr("y", 10)
 		.attr("text-anchor", "middle")
 		.attr("dominant-baseline", "central")
 	}

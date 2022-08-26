@@ -27,8 +27,8 @@
 }
 .repeat{
 	/*background-color: #f4f4ff;*/
-	overflow-y: scroll;
-	height: 150px;
+	/*overflow-y: scroll;*/
+	height: 50px;
 }
 .gene{
 	/*background-color: #f9fcff;*/
@@ -71,6 +71,17 @@
 	font-family: 'Share Tech Mono', monospace;
 	opacity: 0.8;
 }
+
+.dashed_blue{
+	border-top: dashed 1px #5989cf;
+	border-bottom: dashed 1px #5989cf;
+}
+
+.dashed_tan{
+	border-top: dashed 1px #d2b48c;
+	border-bottom: dashed 1px #d2b48c;
+}
+
 
 
 html {

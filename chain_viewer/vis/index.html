@@ -13,124 +13,79 @@
 
 	</head>
 	<body>
-		<div class="box" style="text-align: center;">
-			<div id="general_controlpanel1" class="controlpanel" mergin:>
-				<div style="background-color:#EDF7FF; padding: 3px">
-					Assembly 1
-					<table>
-						<tr>
-							<td>Assembly</td> <td><input type="text" id="genome1_assembly"/></td>
-						</tr>
-						<tr>
-							<td>Chromosome</td> <td><input type="text" id="genome1_chromosome" /></td>
-						</tr>
-						<tr>
-							<td>Begin</td> <td><input type="text" id="genome1_begin" /></td>
-						</tr>
-						<tr>
-							<td>End</td> <td><input type="text" id="genome1_end"/></td>
-						</tr>
-					</table>
-					<input type="button" value="zoom in"  onclick="clickZoomInBtn(1)"/>
-					<input type="button" value="zoom out" onclick="clickZoomOutBtn(1)"/>
-					<p></p>
-					<input type="button" value="<<<" onclick="clickScrollBtn(1, -1/1)" />
-					<input type="button" value="<<"  onclick="clickScrollBtn(1, -1/2)" />
-					<input type="button" value="<"   onclick="clickScrollBtn(1, -1/4)" />
-					<input type="button" value=">"   onclick="clickScrollBtn(1, +1/4)" />
-					<input type="button" value=">>"  onclick="clickScrollBtn(1, +1/2)" />
-					<input type="button" value=">>>" onclick="clickScrollBtn(1, +1/1)" />
-					<div>
-						<input type="button" value="update" onclick="clickUpdateBtn(1)" />
-					</div>
-				</div>
-			</div>
-			<div id="general_controlpanel3" class="controlpanel" mergin:>
-				<div style="background-color:#98fb98; padding: 3px">
-					<table>
-						<tr>
-							<td>Assembly</td> <td><input type="text" id="genome3_assembly"/></td>
-						</tr>
-						<tr>
-							<td>Chromosome</td> <td><input type="text" id="genome3_chromosome" /></td>
-						</tr>
-						<tr>
-							<td>Begin</td> <td><input type="text" id="genome3_begin" /></td>
-						</tr>
-						<tr>
-							<td>End</td> <td><input type="text" id="genome3_end"/></td>
-						</tr>
-					</table>
-					<input type="button" value="zoom in"  onclick="clickZoomInBtn(1) ; clickZoomInBtn(2) ; clickZoomInBtn(3) ;"/>
-					<input type="button" value="zoom out" onclick="clickZoomOutBtn(1); clickZoomOutBtn(2); clickZoomOutBtn(3);"/>
-					<p></p>
-					<input type="button" value="<<<" onclick="clickScrollBtn(1, -1/1); clickScrollBtn(2, -1/1); clickScrollBtn(3, -1/1)" />
-					<input type="button" value="<<"  onclick="clickScrollBtn(1, -1/2); clickScrollBtn(2, -1/2); clickScrollBtn(3, -1/2)" />
-					<input type="button" value="<"   onclick="clickScrollBtn(1, -1/4); clickScrollBtn(2, -1/4); clickScrollBtn(3, -1/4)" />
-					<input type="button" value=">"   onclick="clickScrollBtn(1, +1/4); clickScrollBtn(2, +1/4); clickScrollBtn(3, +1/4)" />
-					<input type="button" value=">>"  onclick="clickScrollBtn(1, +1/2); clickScrollBtn(2, +1/2); clickScrollBtn(3, +1/2)" />
-					<input type="button" value=">>>" onclick="clickScrollBtn(1, +1/1); clickScrollBtn(2, +1/1); clickScrollBtn(3, +1/1)" />
-					<div>
-						<input type="button" value="Align the scale" onclick="alignScale()" />
-					</div>
-					<div>
-						<input type="button" value="update" onclick="clickUpdateBtn(1); clickUpdateBtn(2); clickUpdateBtn(3)" />
-					</div>
-				</div>
-			</div>
+		<div id="general_controlpanel1" class="controlpanel" mergin:>
+			<div style="background-color:#EDF7FF; padding: 3px">
+				Assembly1 <input type="text" id="genome1_assembly"/>
+				Chromosome <input type="text" id="genome1_chromosome" />
+				Begin <input type="text" id="genome1_begin" />
+				End <input type="text" id="genome1_end"/>
 
-			<div id="general_controlpanel2" class="controlpanel">
-				<div style="background-color:#fafad2;padding: 3px">
-					Assembly 2
-					<table>
-						<tr>
-							<td>Assembly</td> <td><input type="text" id="genome2_assembly"/></td>
-						</tr>
-						<tr>
-							<td>Chromosome</td> <td><input type="text" id="genome2_chromosome" /></td>
-						</tr>
-						<tr>
-							<td>Begin</td> <td><input type="text" id="genome2_begin" /></td>
-						</tr>
-						<tr>
-							<td>End</td> <td><input type="text" id="genome2_end"/></td>
-						</tr>
-					</table>
-					<input type="button" value="zoom in"  onclick="clickZoomInBtn(2)"/>
-					<input type="button" value="zoom out" onclick="clickZoomOutBtn(2)"/>
-					<p></p>
-					<input type="button" value="<<<" onclick="clickScrollBtn(2, -1/1)" />
-					<input type="button" value="<<"  onclick="clickScrollBtn(2, -1/2)" />
-					<input type="button" value="<"   onclick="clickScrollBtn(2, -1/4)" />
-					<input type="button" value=">"   onclick="clickScrollBtn(2, +1/4)" />
-					<input type="button" value=">>"  onclick="clickScrollBtn(2, +1/2)" />
-					<input type="button" value=">>>" onclick="clickScrollBtn(2, +1/1)" />
-					<div>
-						<input type="button" value="update" onclick="clickUpdateBtn(2)" />
-					</div>
-				</div>
+				<input type="button" value="zoom in"  onclick="clickZoomInBtn(1)"/>
+				<input type="button" value="zoom out" onclick="clickZoomOutBtn(1)"/>
+				<input type="button" value="<<<" onclick="clickScrollBtn(1, -1/1)" />
+				<input type="button" value="<<"  onclick="clickScrollBtn(1, -1/2)" />
+				<input type="button" value="<"   onclick="clickScrollBtn(1, -1/4)" />
+				<input type="button" value=">"   onclick="clickScrollBtn(1, +1/4)" />
+				<input type="button" value=">>"  onclick="clickScrollBtn(1, +1/2)" />
+				<input type="button" value=">>>" onclick="clickScrollBtn(1, +1/1)" />
+				<input type="button" value="update" onclick="clickUpdateBtn(1)" />
+			</div>
+		</div>
+		<div id="general_controlpanel3" class="controlpanel" mergin:>
+			<div style="background-color:#98fb98; padding: 3px">
+				Assembly3 <input type="text" id="genome3_assembly"/>
+				Chromosome <input type="text" id="genome3_chromosome" />
+				Begin <input type="text" id="genome3_begin" />
+				End <input type="text" id="genome3_end"/>
+				<input type="button" value="zoom in"  onclick="clickZoomInBtn(1) ; clickZoomInBtn(2) ; clickZoomInBtn(3) ;"/>
+				<input type="button" value="zoom out" onclick="clickZoomOutBtn(1); clickZoomOutBtn(2); clickZoomOutBtn(3);"/>
+				<input type="button" value="<<<" onclick="clickScrollBtn(1, -1/1); clickScrollBtn(2, -1/1); clickScrollBtn(3, -1/1)" />
+				<input type="button" value="<<"  onclick="clickScrollBtn(1, -1/2); clickScrollBtn(2, -1/2); clickScrollBtn(3, -1/2)" />
+				<input type="button" value="<"   onclick="clickScrollBtn(1, -1/4); clickScrollBtn(2, -1/4); clickScrollBtn(3, -1/4)" />
+				<input type="button" value=">"   onclick="clickScrollBtn(1, +1/4); clickScrollBtn(2, +1/4); clickScrollBtn(3, +1/4)" />
+				<input type="button" value=">>"  onclick="clickScrollBtn(1, +1/2); clickScrollBtn(2, +1/2); clickScrollBtn(3, +1/2)" />
+				<input type="button" value=">>>" onclick="clickScrollBtn(1, +1/1); clickScrollBtn(2, +1/1); clickScrollBtn(3, +1/1)" />
+				<input type="button" value="Align the scale" onclick="alignScale()" />
+				<input type="button" value="update" onclick="clickUpdateBtn(1); clickUpdateBtn(2); clickUpdateBtn(3)" />
+			</div>
+		</div>
+		<div id="general_controlpanel2" class="controlpanel">
+			<div style="background-color:#fafad2;padding: 3px">
+				Assembly2 <input type="text" id="genome2_assembly"/>
+				Chromosome <input type="text" id="genome2_chromosome" />
+				Begin <input type="text" id="genome2_begin" />
+				End <input type="text" id="genome2_end"/>
+				<input type="button" value="zoom in"  onclick="clickZoomInBtn(2)"/>
+				<input type="button" value="zoom out" onclick="clickZoomOutBtn(2)"/>
+				<input type="button" value="<<<" onclick="clickScrollBtn(2, -1/1)" />
+				<input type="button" value="<<"  onclick="clickScrollBtn(2, -1/2)" />
+				<input type="button" value="<"   onclick="clickScrollBtn(2, -1/4)" />
+				<input type="button" value=">"   onclick="clickScrollBtn(2, +1/4)" />
+				<input type="button" value=">>"  onclick="clickScrollBtn(2, +1/2)" />
+				<input type="button" value=">>>" onclick="clickScrollBtn(2, +1/1)" />
+				<input type="button" value="update" onclick="clickUpdateBtn(2)" />
 			</div>
 		</div>
 
-		<div id="genome1_title"             class ="title   genome1"       style="text-align: center;"></div>
-		<div id="genome1_minimap"           class ="minimap genome1"       style="text-align: center;"></div>
-		<div id="genome1_axis"              class ="axis genome1"          style="text-align: center;"></div>
-		<div id="genome1_sequence"          class ="sequence genome1"      style="text-align: center;"></div>
-		<div id="genome1_snp"               class ="snp genome1"           style="text-align: center;"></div>
-		<div id="genome1_repeat"            class ="repeat genome1"        style="text-align: center;"></div>
-		<div id="genome1_gene"              class ="gene genome1"          style="text-align: center;"></div>
-		<div id="genome1_covered_as_source" class ="chain_covered genome1" style="text-align: center;"></div>
-		<div id="genome1_covered_as_target" class ="chain_covered genome1" style="text-align: center;"></div>
-		<div id="chain"                     class ="chain"                 style="text-align: center;"></div>
-		<div id="genome2_covered_as_target" class ="chain_covered genome2" style="text-align: center;"></div>
-		<div id="genome2_covered_as_source" class ="chain_covered genome2" style="text-align: center;"></div>
-		<div id="genome2_gene"              class ="gene genome2"          style="text-align: center;"></div>
-		<div id="genome2_repeat"            class ="repeat genome2"        style="text-align: center;"></div>
-		<div id="genome2_snp"               class ="snp genome2"           style="text-align: center;"></div>
-		<div id="genome2_sequence"          class ="sequence genome2"      style="text-align: center;"></div>
-		<div id="genome2_axis"              class ="axis genome2"          style="text-align: center;"></div>
-		<div id="genome2_minimap"           class ="minimap genome2"       style="text-align: center;"></div>
-		<div id="genome2_title"             class ="title genome2"         style="text-align: center;"></div>
+		<div id="genome1_title"             class ="title   genome1"          style ="text-align: center;"></div>
+		<div id="genome1_minimap"           class ="minimap genome1"          style ="text-align: center;"></div>
+		<div id="genome1_axis"              class ="axis genome1"             style ="text-align: center;"></div>
+		<div id="genome1_sequence"          class ="sequence genome1"         style ="text-align: center;"></div>
+		<div id="genome1_snp"               class ="snp genome1"              style ="text-align: center;"></div>
+		<div id="genome1_repeat"            class ="repeat genome1"           style ="text-align: center;"></div>
+		<div id="genome1_gene"              class ="gene genome1 dashed_blue" style ="text-align: center;"></div>
+		<div id="genome1_covered_as_source" class ="chain_covered genome1"    style ="text-align: center;"></div>
+		<div id="genome1_covered_as_target" class ="chain_covered genome1"    style ="text-align: center;"></div>
+		<div id="chain"                     class ="chain"                    style ="text-align: center;"></div>
+		<div id="genome2_covered_as_target" class ="chain_covered genome2"    style ="text-align: center;"></div>
+		<div id="genome2_covered_as_source" class ="chain_covered genome2"    style ="text-align: center;"></div>
+		<div id="genome2_gene"              class ="gene genome2 dashed_tan"  style ="text-align: center;"></div>
+		<div id="genome2_repeat"            class ="repeat genome2"           style ="text-align: center;"></div>
+		<div id="genome2_snp"               class ="snp genome2"              style ="text-align: center;"></div>
+		<div id="genome2_sequence"          class ="sequence genome2"         style ="text-align: center;"></div>
+		<div id="genome2_axis"              class ="axis genome2"             style ="text-align: center;"></div>
+		<div id="genome2_minimap"           class ="minimap genome2"          style ="text-align: center;"></div>
+		<div id="genome2_title"             class ="title genome2"            style ="text-align: center;"></div>
 
 		<script type="text/javascript" src="svg-z-order.js"></script>
 		<script src="https://d3js.org/d3.v7.min.js"></script>
