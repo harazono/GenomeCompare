@@ -19,16 +19,27 @@
 				Chromosome <input type="text" id="genome1_chromosome" />
 				Begin <input type="text" id="genome1_begin" />
 				End <input type="text" id="genome1_end"/>
-
-				<input type="button" value="zoom in"  onclick="clickZoomInBtn(1)"/>
-				<input type="button" value="zoom out" onclick="clickZoomOutBtn(1)"/>
-				<input type="button" value="<<<" onclick="clickScrollBtn(1, -1/1)" />
-				<input type="button" value="<<"  onclick="clickScrollBtn(1, -1/2)" />
-				<input type="button" value="<"   onclick="clickScrollBtn(1, -1/4)" />
-				<input type="button" value=">"   onclick="clickScrollBtn(1, +1/4)" />
-				<input type="button" value=">>"  onclick="clickScrollBtn(1, +1/2)" />
-				<input type="button" value=">>>" onclick="clickScrollBtn(1, +1/1)" />
-				<input type="button" value="update" onclick="clickUpdateBtn(1)" />
+				Range <input type="text" id="genome1_range" readonly/>
+				<input type="button" value="update" onclick ="clickUpdateBtn(1)" />
+				Zoom in:
+				<input type="button" value="x10"    onclick ="clickZoomBtn(1, 10)"/>
+				<input type="button" value="x5"     onclick ="clickZoomBtn(1, 5)"/>
+				<input type="button" value="x3"     onclick ="clickZoomBtn(1, 3)"/>
+				<input type="button" value="x2"     onclick ="clickZoomBtn(1, 2)"/>
+				<input type="button" value="x1.5"   onclick ="clickZoomBtn(1, 1.5)"/>
+				Zoom out:
+				<input type="button" value="/10"    onclick ="clickZoomBtn(1, 1/10)"/>
+				<input type="button" value="/5"     onclick ="clickZoomBtn(1, 1/5)"/>
+				<input type="button" value="/3"     onclick ="clickZoomBtn(1, 1/3)"/>
+				<input type="button" value="/2"     onclick ="clickZoomBtn(1, 1/2)"/>
+				<input type="button" value="/1.5"   onclick ="clickZoomBtn(1, 1/1.5)"/>
+				Scroll:
+				<input type="button" value="<<<"    onclick ="clickScrollBtn(1, -1/1)" />
+				<input type="button" value="<<"     onclick ="clickScrollBtn(1, -1/2)" />
+				<input type="button" value="<"      onclick ="clickScrollBtn(1, -1/4)" />
+				<input type="button" value=">"      onclick ="clickScrollBtn(1, +1/4)" />
+				<input type="button" value=">>"     onclick ="clickScrollBtn(1, +1/2)" />
+				<input type="button" value=">>>"    onclick ="clickScrollBtn(1, +1/1)" />
 			</div>
 		</div>
 		<div id="general_controlpanel3" class="controlpanel" mergin:>
@@ -37,16 +48,27 @@
 				Chromosome <input type="text" id="genome3_chromosome" />
 				Begin <input type="text" id="genome3_begin" />
 				End <input type="text" id="genome3_end"/>
-				<input type="button" value="zoom in"  onclick="clickZoomInBtn(1) ; clickZoomInBtn(2) ; clickZoomInBtn(3) ;"/>
-				<input type="button" value="zoom out" onclick="clickZoomOutBtn(1); clickZoomOutBtn(2); clickZoomOutBtn(3);"/>
-				<input type="button" value="<<<" onclick="clickScrollBtn(1, -1/1); clickScrollBtn(2, -1/1); clickScrollBtn(3, -1/1)" />
-				<input type="button" value="<<"  onclick="clickScrollBtn(1, -1/2); clickScrollBtn(2, -1/2); clickScrollBtn(3, -1/2)" />
-				<input type="button" value="<"   onclick="clickScrollBtn(1, -1/4); clickScrollBtn(2, -1/4); clickScrollBtn(3, -1/4)" />
-				<input type="button" value=">"   onclick="clickScrollBtn(1, +1/4); clickScrollBtn(2, +1/4); clickScrollBtn(3, +1/4)" />
-				<input type="button" value=">>"  onclick="clickScrollBtn(1, +1/2); clickScrollBtn(2, +1/2); clickScrollBtn(3, +1/2)" />
-				<input type="button" value=">>>" onclick="clickScrollBtn(1, +1/1); clickScrollBtn(2, +1/1); clickScrollBtn(3, +1/1)" />
-				<input type="button" value="Align the scale" onclick="alignScale()" />
-				<input type="button" value="update" onclick="clickUpdateBtn(1); clickUpdateBtn(2); clickUpdateBtn(3)" />
+				Range <input type="text" id="genome3_range" readonly/>
+				<input type="button" value="update" onclick ="alignScale()" />
+				Zoom in:
+				<input type="button" value="x10"    onclick ="clickZoomBtn(1, 10);     clickZoomBtn(2, 10);     clickZoomBtn(3, 10);"/>
+				<input type="button" value="x5"     onclick ="clickZoomBtn(1, 5);      clickZoomBtn(2, 5);      clickZoomBtn(3, 5);"/>
+				<input type="button" value="x3"     onclick ="clickZoomBtn(1, 3);      clickZoomBtn(2, 3);      clickZoomBtn(3, 3);"/>
+				<input type="button" value="x2"     onclick ="clickZoomBtn(1, 2);      clickZoomBtn(2, 2);      clickZoomBtn(3, 2);"/>
+				<input type="button" value="x1.5"   onclick ="clickZoomBtn(1, 1.5);    clickZoomBtn(2, 1.5);    clickZoomBtn(3, 1.5);"/>
+				Zoom out:
+				<input type="button" value="/10"    onclick ="clickZoomBtn(1, 1/10);   clickZoomBtn(2, 1/10);   clickZoomBtn(3, 1/10);"/>
+				<input type="button" value="/5"     onclick ="clickZoomBtn(1, 1/5);    clickZoomBtn(2, 1/5);    clickZoomBtn(3, 1/5);"/>
+				<input type="button" value="/3"     onclick ="clickZoomBtn(1, 1/3);    clickZoomBtn(2, 1/3);    clickZoomBtn(3, 1/3);"/>
+				<input type="button" value="/2"     onclick ="clickZoomBtn(1, 1/2);    clickZoomBtn(2, 1/2);    clickZoomBtn(3, 1/2);"/>
+				<input type="button" value="/1.5"   onclick ="clickZoomBtn(1, 1/1.5);  clickZoomBtn(2, 1/1.5);  clickZoomBtn(3, 1/1.5);"/>
+				Scroll:
+				<input type="button" value="<<<"    onclick ="clickScrollBtn(1, -1/1); clickScrollBtn(2, -1/1); clickScrollBtn(3, -1/1);"/>
+				<input type="button" value="<<"     onclick ="clickScrollBtn(1, -1/2); clickScrollBtn(2, -1/2); clickScrollBtn(3, -1/2);"/>
+				<input type="button" value="<"      onclick ="clickScrollBtn(1, -1/4); clickScrollBtn(2, -1/4); clickScrollBtn(3, -1/4);"/>
+				<input type="button" value=">"      onclick ="clickScrollBtn(1, +1/4); clickScrollBtn(2, +1/4); clickScrollBtn(3, +1/4);"/>
+				<input type="button" value=">>"     onclick ="clickScrollBtn(1, +1/2); clickScrollBtn(2, +1/2); clickScrollBtn(3, +1/2);"/>
+				<input type="button" value=">>>"    onclick ="clickScrollBtn(1, +1/1); clickScrollBtn(2, +1/1); clickScrollBtn(3, +1/1);"/>
 			</div>
 		</div>
 		<div id="general_controlpanel2" class="controlpanel">
@@ -55,15 +77,27 @@
 				Chromosome <input type="text" id="genome2_chromosome" />
 				Begin <input type="text" id="genome2_begin" />
 				End <input type="text" id="genome2_end"/>
-				<input type="button" value="zoom in"  onclick="clickZoomInBtn(2)"/>
-				<input type="button" value="zoom out" onclick="clickZoomOutBtn(2)"/>
-				<input type="button" value="<<<" onclick="clickScrollBtn(2, -1/1)" />
-				<input type="button" value="<<"  onclick="clickScrollBtn(2, -1/2)" />
-				<input type="button" value="<"   onclick="clickScrollBtn(2, -1/4)" />
-				<input type="button" value=">"   onclick="clickScrollBtn(2, +1/4)" />
-				<input type="button" value=">>"  onclick="clickScrollBtn(2, +1/2)" />
-				<input type="button" value=">>>" onclick="clickScrollBtn(2, +1/1)" />
-				<input type="button" value="update" onclick="clickUpdateBtn(2)" />
+				Range <input type="text" id="genome2_range" readonly/>
+				<input type="button" value="update" onclick ="clickUpdateBtn(2)" />
+				Zoom in:
+				<input type="button" value="x10"    onclick ="clickZoomBtn(2, 10)"/>
+				<input type="button" value="x5"     onclick ="clickZoomBtn(2, 5)"/>
+				<input type="button" value="x3"     onclick ="clickZoomBtn(2, 3)"/>
+				<input type="button" value="x2"     onclick ="clickZoomBtn(2, 2)"/>
+				<input type="button" value="x1.5"   onclick ="clickZoomBtn(2, 1.5)"/>
+				Zoom out:
+				<input type="button" value="/10"    onclick ="clickZoomBtn(2, 1/10)"/>
+				<input type="button" value="/5"     onclick ="clickZoomBtn(2, 1/5)"/>
+				<input type="button" value="/3"     onclick ="clickZoomBtn(2, 1/3)"/>
+				<input type="button" value="/2"     onclick ="clickZoomBtn(2, 1/2)"/>
+				<input type="button" value="/1.5"   onclick ="clickZoomBtn(2, 1/1.5)"/>
+				Scroll:
+				<input type="button" value="<<<"    onclick ="clickScrollBtn(2, -1/1)" />
+				<input type="button" value="<<"     onclick ="clickScrollBtn(2, -1/2)" />
+				<input type="button" value="<"      onclick ="clickScrollBtn(2, -1/4)" />
+				<input type="button" value=">"      onclick ="clickScrollBtn(2, +1/4)" />
+				<input type="button" value=">>"     onclick ="clickScrollBtn(2, +1/2)" />
+				<input type="button" value=">>>"    onclick ="clickScrollBtn(2, +1/1)" />
 			</div>
 		</div>
 
