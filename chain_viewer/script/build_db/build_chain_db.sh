@@ -10,7 +10,8 @@ sqlite3 $filename "CREATE TABLE IF NOT EXISTS chain( \
 	target_chromosome text, \
 	target_start int, \
 	target_end int, \
-	length int \
+	length int, \
+	strand text \
 );"
 
 sqlite3 -separator , $filename ".import ../csv/GRCh37ToGRCh38_chain.csv chain"

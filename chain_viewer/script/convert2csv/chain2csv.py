@@ -100,7 +100,8 @@ def main():
 		target_start = each_chain.target_start
 		target_end = each_chain.target_end
 		length = each_chain.cigar
-		tmp = [source_assembly, source_chromosome, source_start, source_end, target_assembly, target_chromosome, target_start, target_end, length]
+		strand = each_chain.rev
+		tmp = [source_assembly, source_chromosome, source_start, source_end, target_assembly, target_chromosome, target_start, target_end, length, strand]
 		tmp = [str(x) for x in tmp]
 		print(",".join(tmp))
 
