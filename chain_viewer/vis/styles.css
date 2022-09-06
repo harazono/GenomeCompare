@@ -1,9 +1,7 @@
 .box {
 	display: flex;
 }
-.controlpanel{
-	margin: 5px auto;
-}
+
 .title{
 	/*background-color: #fff4f4;*/
 	height: 25px;
