@@ -78,15 +78,15 @@ class GenomeCoordinateInfo {
 		this.NtSize          = NtSize;
 	}
 }
-const initial_leftend  = 1652092
+const initial_leftend  = 1652000
 const initial_rightend = 1652800
 const initial_length   = initial_rightend - initial_leftend
 const initial_center   = initial_leftend  + initial_length / 2
 const initial_NtSize   = parseFloat(svg_canvas_width) / initial_length
 
-let genome1 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "GRCh38", "chr1", initial_NtSize)
-let genome2 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "GRCh37", "chr1", initial_NtSize)
-let genome3 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "", "chr1", initial_NtSize)
+let genome1 = new GenomeCoordinateInfo(100096733, 100096779, initial_length, initial_center, "GRCh38", "chr1", initial_NtSize)
+let genome2 = new GenomeCoordinateInfo(145024726, 145024772, initial_length, initial_center, "GRCh37", "chr1", initial_NtSize)
+let genome3 = new GenomeCoordinateInfo(145024726, 145024772, initial_length, initial_center, "", "chr1", initial_NtSize)
 
 function updateRegionInfo(){
 	const genome1_leftend         = parseInt(document.getElementById("genome1_begin").value.replace(/,/g, ''));
@@ -142,6 +142,7 @@ reflectCoordinate(2)
 reflectCoordinate(3)
 
 function updateScreen(genomeID){
+	updateRegionInfo()
 	if(genomeID === 1 || genomeID === 2){
 		drawTitle(genomeID);
 		drawMinimap(genomeID);
@@ -152,6 +153,7 @@ function updateScreen(genomeID){
 		drawGene(genomeID);
 		drawChainCovered(genomeID);
 	}
+	drawChain();
 }
 d3.select(window)
 .on("resize", function() {
@@ -935,32 +937,31 @@ async function drawGene(genomeID){
 
 	const query = `http://localhost:8000/?table=transcript&assembly=${genome.genome_name}&chr=${genome.chromosome_name}&start=${genome.leftend}&end=${genome.rightend}`;
 	const res = await fetch(query, {method: 'GET'});
-		const data = await res.json();//.then(response => response.json()).then(data => {return data.length}).catch((err) => {console.log(err)});
-		if (data.length == 0){
-			canvas
-			.append("text")
-			.text("No Gene in this range")
-			.attr("x", svg_canvas_width / 2)
-			.attr("y", 5)
-			.attr("text-anchor", "middle")
-			.attr("dominant-baseline", "central")
-			return;
+	const data = await res.json();//.then(response => response.json()).then(data => {return data.length}).catch((err) => {console.log(err)});
+	if (data.length == 0){
+		canvas
+		.append("text")
+		.text("No Gene in this range")
+		.attr("x", svg_canvas_width / 2)
+		.attr("y", 5)
+		.attr("text-anchor", "middle")
+		.attr("dominant-baseline", "central")
+		return;
+	}
+	if (data.length > 5000){
+		for(let i = 0; i < data.length; i++){
+			currentTranscript = data[i];
+			drawOneTranscriptSimple(canvas, genome, currentTranscript);
 		}
-		if (data.length > 5000){
-			for(let i = 0; i < data.length; i++){
-				currentTranscript = data[i];
-				drawOneTranscriptSimple(canvas, genome, currentTranscript);
-			}
-		}else{
-			for(let i = 0; i < data.length; i++){
-				currentTranscript = data[i];
-				drawOneTranscript(canvas, genome, currentTranscript);
-			}
-
+	}else{
+		for(let i = 0; i < data.length; i++){
+			currentTranscript = data[i];
+			drawOneTranscript(canvas, genome, currentTranscript);
 		}
 	}
+}
 
-	function drawOneCoveredAsSourceRange(genomeID, chain){
+function drawOneCoveredAsSourceRange(genomeID, chain){
 	//covered as sourceで64,000個くらいオブジェクトを生成してるが、絶対そんなにいらない。
 	let canvas
 	let this_genome
@@ -1379,11 +1380,15 @@ async function drawChainCovered(genomeID){
 		d3.select("body").selectAll(".covered_range_tooltip").remove()
 		//genome1 がsource
 		//const covered_range_on_genome1_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}&source-start=${genome1.leftend}&source-end=${genome1.rightend}`;
-		const covered_range_on_genome1_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}`;
-		const covered_range_on_genome1_res   = await fetch(covered_range_on_genome1_query, {method: 'GET'});
-		const covered_range_on_genome1_data  = await covered_range_on_genome1_res.json();
-		if (covered_range_on_genome1_data.length == 0){
-			canvas
+		const source_range_on_genome1_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}`;
+		const source_range_on_genome1_res   = await fetch(source_range_on_genome1_query, {method: 'GET'});
+		const source_range_on_genome1_data  = await source_range_on_genome1_res.json();
+		const target_range_on_genome1_query = `http://localhost:8000/?table=chain&target-assembly=${genome1.genome_name}&target-chromosome=${genome1.chromosome_name}`;
+		const target_range_on_genome1_res   = await fetch(target_range_on_genome1_query, {method: 'GET'});
+		const target_range_on_genome1_data  = await target_range_on_genome1_res.json();
+
+		if (source_range_on_genome1_data.length == 0){
+			genome1_covered_as_source_svg
 			.append("text")
 			.text("No chain in this range")
 			.attr("x", svg_canvas_width / 2)
@@ -1391,20 +1396,35 @@ async function drawChainCovered(genomeID){
 			.attr("text-anchor", "middle")
 			.attr("dominant-baseline", "central")
 			return;
+		}else{
+			for (let i = 0; i < source_range_on_genome1_data.length; i++){
+				let chain   = source_range_on_genome1_data[i];
+				const left  = parseInt(chain[2]);//座標, not pixcel
+				const right = parseInt(chain[3]);//座標, not pixcel
+				if (left > genome1.rightend || right < genome1.leftend){
+				}else{
+					drawOneCoveredAsSourceRange(1, source_range_on_genome1_data[i]);
+				}
+			}
 		}
-
-		for (let i = 0; i < covered_range_on_genome1_data.length; i++){
-			//ここで全部描画するのが良くない。描画領域に合わせて描画するべき。
-			let chain   = covered_range_on_genome1_data[i];
-			const left  = parseInt(chain[2]);//座標, not pixcel
-			const right = parseInt(chain[3]);//座標, not pixcel
-			// left > genome1.rightend or right < canvas.leftendだったら描画しない。
-			//console.log(left, genome1.leftend,left > genome1.leftend, right, genome1.rightend, right < genome1.rightend);
-			if (left > genome1.rightend || right < genome1.leftend){
-				//描画しない
-			}else{
-				drawOneCoveredAsSourceRange(1, covered_range_on_genome1_data[i]);
-
+		if (target_range_on_genome1_data.length == 0){
+			genome1_covered_as_target_svg
+			.append("text")
+			.text("No chain in this range")
+			.attr("x", svg_canvas_width / 2)
+			.attr("y", 5)
+			.attr("text-anchor", "middle")
+			.attr("dominant-baseline", "central")
+			return;
+		}else{
+			for (let i = 0; i < target_range_on_genome1_data.length; i++){
+				let chain   = target_range_on_genome1_data[i];
+				const left  = parseInt(chain[2]);//座標, not pixcel
+				const right = parseInt(chain[3]);//座標, not pixcel
+				if (left > genome1.rightend || right < genome1.leftend){
+				}else{
+					drawOneCoveredAsTargetRange(1, target_range_on_genome1_data[i]);
+				}
 			}
 		}
 	}else{
@@ -1413,13 +1433,18 @@ async function drawChainCovered(genomeID){
 			x.selectAll("rect").remove();
 			x.selectAll("line").remove();
 		})
+		d3.select("body").selectAll(".covered_range_tooltip").remove()
 		//genome2 がtarget
 		//const covered_range_on_genome2_query = `http://localhost:8000/?table=chain&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}&target-start=${genome2.leftend}&target-end=${genome2.rightend}`;
-		const covered_range_on_genome2_query = `http://localhost:8000/?table=chain&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}`;
-		const covered_range_on_genome2_res   = await fetch(covered_range_on_genome2_query, {method: 'GET'});
-		const covered_range_on_genome2_data  = await covered_range_on_genome2_res.json();
-		if (covered_range_on_genome2_data.length == 0){
-			canvas
+		const source_range_on_genome2_query = `http://localhost:8000/?table=chain&source-assembly=${genome2.genome_name}&source-chromosome=${genome2.chromosome_name}`;
+		const source_range_on_genome2_res   = await fetch(source_range_on_genome2_query, {method: 'GET'});
+		const source_range_on_genome2_data  = await source_range_on_genome2_res.json();
+		const target_range_on_genome2_query = `http://localhost:8000/?table=chain&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}`;
+		const target_range_on_genome2_res   = await fetch(target_range_on_genome2_query, {method: 'GET'});
+		const target_range_on_genome2_data  = await target_range_on_genome2_res.json();
+
+		if (source_range_on_genome2_data.length == 0){
+			genome2_covered_as_source_svg
 			.append("text")
 			.text("No chain in this range")
 			.attr("x", svg_canvas_width / 2)
@@ -1428,16 +1453,37 @@ async function drawChainCovered(genomeID){
 			.attr("dominant-baseline", "central")
 			return;
 		}
-
-		for (let i = 0; i < covered_range_on_genome2_data.length; i++){
-			let chain   = covered_range_on_genome2_data[i];
+		for (let i = 0; i < source_range_on_genome2_data.length; i++){
+			let chain   = source_range_on_genome2_data[i];
 			const left  = parseInt(chain[6]);
 			const right = parseInt(chain[7]);
 			if (left < genome2.rightend && right > genome2.leftend){
-				drawOneCoveredAsTargetRange(2, covered_range_on_genome2_data[i])
+				drawOneCoveredAsSourceRange(2, source_range_on_genome2_data[i])
 			}
 		}
+		if (target_range_on_genome2_data.length == 0){
+			genome2_covered_as_target_svg
+			.append("text")
+			.text("No chain in this range")
+			.attr("x", svg_canvas_width / 2)
+			.attr("y", 5)
+			.attr("text-anchor", "middle")
+			.attr("dominant-baseline", "central")
+			return;
+		}else{
+			for (let i = 0; i < target_range_on_genome2_data.length; i++){
+				let chain   = target_range_on_genome2_data[i];
+				const left  = parseInt(chain[2]);//座標, not pixcel
+				const right = parseInt(chain[3]);//座標, not pixcel
+				if (left > genome2.rightend || right < genome2.leftend){
+				}else{
+					drawOneCoveredAsTargetRange(2, target_range_on_genome2_data[i]);
+				}
+			}
+		}
+
 	}
+
 }
 
 function drawOneChainRectangle(chain){
