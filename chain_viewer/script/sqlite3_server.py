@@ -85,12 +85,16 @@ class SQLite3Handler(s.SimpleHTTPRequestHandler):
 			print(qs_d)
 			source_assembly   = None
 			source_chromosome = None
-			source_start      = None
-			source_end        = None
+			source_start_g    = None
+			source_end_g      = None
+			source_start_l    = None
+			source_end_l      = None
 			target_assembly   = None
 			target_chromosome = None
-			target_start      = None
-			target_end        = None
+			target_start_g    = None
+			target_end_g      = None
+			target_start_l    = None
+			target_end_l      = None
 			try:
 				source_assembly   = qs_d.get("source-assembly")[0]
 			except:
@@ -100,11 +104,19 @@ class SQLite3Handler(s.SimpleHTTPRequestHandler):
 			except:
 				pass
 			try:
-				source_start      = qs_d.get("source-start")[0]
+				source_start_g    = qs_d.get("source-start-g")[0]
 			except:
 				pass
 			try:
-				source_end        = qs_d.get("source-end")[0]
+				source_end_g      = qs_d.get("source-end-g")[0]
+			except:
+				pass
+			try:
+				source_start_l    = qs_d.get("source-start-l")[0]
+			except:
+				pass
+			try:
+				source_end_l      = qs_d.get("source-end-l")[0]
 			except:
 				pass
 			try:
@@ -116,33 +128,48 @@ class SQLite3Handler(s.SimpleHTTPRequestHandler):
 			except:
 				pass
 			try:
-				target_start      = qs_d.get("target-start")[0]
+				target_start_g    = qs_d.get("target-start-g")[0]
 			except:
 				pass
 			try:
-				target_end        = qs_d.get("target-end")[0]
+				target_end_g      = qs_d.get("target-end-g")[0]
+			except:
+				pass
+			try:
+				target_start_l    = qs_d.get("target-start-l")[0]
+			except:
+				pass
+			try:
+				target_end_l      = qs_d.get("target-end-l")[0]
 			except:
 				pass
 				
-			print(target_assembly, target_chromosome, target_start, target_end)
 			query_text = f"SELECT * FROM {table} WHERE "
 			query_parameter = []
 			if source_assembly:
 				query_parameter.append(f"source_assembly='{source_assembly}'")
 			if source_chromosome:
 				query_parameter.append(f"source_chromosome='{source_chromosome}'")
-			if source_start:
-				query_parameter.append(f"source_start<{source_end}")
-			if source_end:
-				query_parameter.append(f"source_end>{source_start}")
+			if source_start_g:
+				query_parameter.append(f"source_start>{source_start_g}")
+			if source_end_g:
+				query_parameter.append(f"source_end>{source_end_g}")
+			if source_start_l:
+				query_parameter.append(f"source_start<{source_start_l}")
+			if source_end_l:
+				query_parameter.append(f"source_end<{source_end_l}")
 			if target_assembly:
 				query_parameter.append(f"target_assembly='{target_assembly}'")
 			if target_chromosome:
 				query_parameter.append(f"target_chromosome='{target_chromosome}'")
-			if target_start:
-				query_parameter.append(f"target_start<{target_end}")
-			if target_end:
-				query_parameter.append(f"target_end>{target_start}")
+			if target_start_g:
+				query_parameter.append(f"target_start>{target_start_g}")
+			if target_end_g:
+				query_parameter.append(f"target_end>{target_end_g}")
+			if target_start_l:
+				query_parameter.append(f"target_start<{target_start_l}")
+			if target_end_l:
+				query_parameter.append(f"target_end<{target_end_l}")
 			query_text = query_text + " and ".join(query_parameter)
 			print(query_text)
 			"""

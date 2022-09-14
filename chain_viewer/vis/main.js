@@ -58,14 +58,6 @@ d3.select("#genome2_covered_as_target").style("height", "20px");
 let chain_svg = d3.select("#chain").append("svg").attr("preserveAspectRatio", "xMidYMid").attr("width", svg_canvas_width).attr("height", chain_canvas_height_ratio);
 let tooltip = d3.select("body").append("div").attr("visibility", "hidden").classed("tooltip", true)
 
-function copy() {
-	console.log(tooltip);
-	//tooltip.select();
-	document.execCommand("copy");
-}
-
-
-
 
 class GenomeCoordinateInfo {
 	constructor(leftend, rightend, length, center, genome_name, chromosome_name, NtSize) {
@@ -78,15 +70,15 @@ class GenomeCoordinateInfo {
 		this.NtSize          = NtSize;
 	}
 }
-const initial_leftend  = 1652000
-const initial_rightend = 1652800
+const initial_leftend  = 0
+const initial_rightend = 250000000
 const initial_length   = initial_rightend - initial_leftend
 const initial_center   = initial_leftend  + initial_length / 2
 const initial_NtSize   = parseFloat(svg_canvas_width) / initial_length
 
-let genome1 = new GenomeCoordinateInfo(100096733, 100096779, initial_length, initial_center, "GRCh38", "chr1", initial_NtSize)
-let genome2 = new GenomeCoordinateInfo(145024726, 145024772, initial_length, initial_center, "GRCh37", "chr1", initial_NtSize)
-let genome3 = new GenomeCoordinateInfo(145024726, 145024772, initial_length, initial_center, "", "chr1", initial_NtSize)
+let genome1 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "GRCh38", "chr1", initial_NtSize)
+let genome2 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "GRCh37", "chr1", initial_NtSize)
+let genome3 = new GenomeCoordinateInfo(initial_leftend, initial_rightend, initial_length, initial_center, "", "chr1", initial_NtSize)
 
 function updateRegionInfo(){
 	const genome1_leftend         = parseInt(document.getElementById("genome1_begin").value.replace(/,/g, ''));
@@ -233,6 +225,106 @@ function clickUpdateBtn(genomeID){
 		case 3: updateScreen(1); updateScreen(2);break;
 	}
 	drawChain();
+}
+
+
+function clickPrevBtn(){
+}
+function clickNextBtn(){
+
+}
+function clickSaveBtn(){
+	//console.log(localStorage.getItem("genome1_assembly"));
+	//console.log(localStorage);
+	let current_genome1_assembly   = JSON.parse(localStorage.getItem("genome1_assembly"));
+	let current_genome1_chromosome = JSON.parse(localStorage.getItem("genome1_chromosome"));
+	let current_genome1_begin      = JSON.parse(localStorage.getItem("genome1_begin"));
+	let current_genome1_end        = JSON.parse(localStorage.getItem("genome1_end"));
+	let current_genome2_assembly   = JSON.parse(localStorage.getItem("genome2_assembly"));
+	let current_genome2_chromosome = JSON.parse(localStorage.getItem("genome2_chromosome"));
+	let current_genome2_begin      = JSON.parse(localStorage.getItem("genome2_begin"));
+	let current_genome2_end        = JSON.parse(localStorage.getItem("genome2_end"));
+	let current_genome3_assembly   = JSON.parse(localStorage.getItem("genome3_assembly"));
+	let current_genome3_chromosome = JSON.parse(localStorage.getItem("genome3_chromosome"));
+	let current_genome3_begin      = JSON.parse(localStorage.getItem("genome3_begin"));
+	let current_genome3_end        = JSON.parse(localStorage.getItem("genome3_end"));
+
+	if (current_genome1_assembly   === 1) {current_genome1_assembly   = []};
+	if (current_genome1_chromosome === 1) {current_genome1_chromosome = []};
+	if (current_genome1_begin      === 1) {current_genome1_begin      = []};
+	if (current_genome1_end        === 1) {current_genome1_end        = []};
+	if (current_genome2_assembly   === 1) {current_genome2_assembly   = []};
+	if (current_genome2_chromosome === 1) {current_genome2_chromosome = []};
+	if (current_genome2_begin      === 1) {current_genome2_begin      = []};
+	if (current_genome2_end        === 1) {current_genome2_end        = []};
+	if (current_genome3_assembly   === 1) {current_genome3_assembly   = []};
+	if (current_genome3_chromosome === 1) {current_genome3_chromosome = []};
+	if (current_genome3_begin      === 1) {current_genome3_begin      = []};
+	if (current_genome3_end        === 1) {current_genome3_end        = []};
+
+	let new_genome1_assembly   = current_genome1_assembly  .push(d3.select(`#genome1_assembly`).value);
+	let new_genome1_chromosome = current_genome1_chromosome.push(d3.select(`#genome1_chromosome`).value);
+	let new_genome1_begin      = current_genome1_begin     .push(d3.select(`#genome1_begin`).value);
+	let new_genome1_end        = current_genome1_end       .push(d3.select(`#genome1_end`).value);
+	let new_genome2_assembly   = current_genome2_assembly  .push(d3.select(`#genome2_assembly`).value);
+	let new_genome2_chromosome = current_genome2_chromosome.push(d3.select(`#genome2_chromosome`).value);
+	let new_genome2_begin      = current_genome2_begin     .push(d3.select(`#genome2_begin`).value);
+	let new_genome2_end        = current_genome2_end       .push(d3.select(`#genome2_end`).value);
+	let new_genome3_assembly   = current_genome3_assembly  .push(d3.select(`#genome3_assembly`).value);
+	let new_genome3_chromosome = current_genome3_chromosome.push(d3.select(`#genome3_chromosome`).value);
+	let new_genome3_begin      = current_genome3_begin     .push(d3.select(`#genome3_begin`).value);
+	let new_genome3_end        = current_genome3_end       .push(d3.select(`#genome3_end`).value);
+
+	localStorage.setItem("genome1_assembly"   , JSON.stringify(new_genome1_assembly));
+	localStorage.setItem("genome1_chromosome" , JSON.stringify(new_genome1_chromosome));
+	localStorage.setItem("genome1_begin"      , JSON.stringify(new_genome1_begin));
+	localStorage.setItem("genome1_end"        , JSON.stringify(new_genome1_end));
+	localStorage.setItem("genome2_assembly"   , JSON.stringify(new_genome2_assembly));
+	localStorage.setItem("genome2_chromosome" , JSON.stringify(new_genome2_chromosome));
+	localStorage.setItem("genome2_begin"      , JSON.stringify(new_genome2_begin));
+	localStorage.setItem("genome2_end"        , JSON.stringify(new_genome2_end));
+	localStorage.setItem("genome3_assembly"   , JSON.stringify(new_genome3_assembly));
+	localStorage.setItem("genome3_chromosome" , JSON.stringify(new_genome3_chromosome));
+	localStorage.setItem("genome3_begin"      , JSON.stringify(new_genome3_begin));
+	localStorage.setItem("genome3_end"        , JSON.stringify(new_genome3_end));
+	window.alert("saved coordinates to local storage");
+}
+
+function clickLoadBtn(){
+	current_genome1_assembly   = JSON.parse(localStorage.getItem("genome1_assembly"));
+	current_genome1_chromosome = JSON.parse(localStorage.getItem("genome1_chromosome"));
+	current_genome1_begin      = JSON.parse(localStorage.getItem("genome1_begin"));
+	current_genome1_end        = JSON.parse(localStorage.getItem("genome1_end"));
+	current_genome2_assembly   = JSON.parse(localStorage.getItem("genome2_assembly"));
+	current_genome2_chromosome = JSON.parse(localStorage.getItem("genome2_chromosome"));
+	current_genome2_begin      = JSON.parse(localStorage.getItem("genome2_begin"));
+	current_genome2_end        = JSON.parse(localStorage.getItem("genome2_end"));
+	current_genome3_assembly   = JSON.parse(localStorage.getItem("genome3_assembly"));
+	current_genome3_chromosome = JSON.parse(localStorage.getItem("genome3_chromosome"));
+	current_genome3_begin      = JSON.parse(localStorage.getItem("genome3_begin"));
+	current_genome3_end        = JSON.parse(localStorage.getItem("genome3_end"));
+
+	let f = true;
+	if (current_genome1_assembly   === null){f = false;}
+	if (current_genome1_chromosome === null){f = false;}
+	if (current_genome1_begin      === null){f = false;}
+	if (current_genome1_end        === null){f = false;}
+	if (current_genome2_assembly   === null){f = false;}
+	if (current_genome2_chromosome === null){f = false;}
+	if (current_genome2_begin      === null){f = false;}
+	if (current_genome2_end        === null){f = false;}
+	if (current_genome3_assembly   === null){f = false;}
+	if (current_genome3_chromosome === null){f = false;}
+	if (current_genome3_begin      === null){f = false;}
+	if (current_genome3_end        === null){f = false;}
+
+	if (f != true){
+		window.alert("No saved coordinates");
+		return;
+	}
+
+
+
 }
 
 function alignScale(){
@@ -1010,18 +1102,18 @@ function drawOneCoveredAsSourceRange(genomeID, chain){
 	let offset = 0
 	let color;//inter chainかintra chainかで色を分ける
 	if(chain[9] === "+"){
-		if(target_chromosome === opposite_genome.chromosome_name){
+		if(target_chromosome === source_chromosome){
 			color = "#ffb6c1"
 		}else{
 			color = "#da70d6"
-			offset = 15
+			offset = 10
 		}
 	}else{
-		if(target_chromosome === opposite_genome.chromosome_name){
+		if(target_chromosome === source_chromosome){
 			color = "#0000ff"
 		}else{
 			color = "#00bfff"
-			offset = 15
+			offset = 10
 		}
 	}
 	//逆位の場合は色を分ける
@@ -1217,21 +1309,20 @@ function drawOneCoveredAsTargetRange(genomeID, chain){
 	let offset = 0
 	let color;//inter chainかintra chainかで色を分ける
 	if(chain[9] === "+"){
-		if(target_chromosome === opposite_genome.chromosome_name){
+		if(target_chromosome === source_chromosome){
 			color = "#ffb6c1"
 		}else{
 			color = "#da70d6"
-			offset = 15
+			offset = 10
 		}
 	}else{
-		if(target_chromosome === opposite_genome.chromosome_name){
+		if(target_chromosome === source_chromosome){
 			color = "#0000ff"
 		}else{
 			color = "#00bfff"
-			offset = 15
+			offset = 10
 		}
 	}
-	
 	canvas
 	.append("line")
 	.attr("x1",target_start)
@@ -1363,7 +1454,7 @@ function drawOneCoveredAsTargetRange(genomeID, chain){
 			updateScreen(2);
 			drawChain();
 		}else{
-			navigator.clipboard.writeText(info_text);
+			navigator.clipboard.writeText(copy_text);
 			e.stopPropagation();
 		}
 	})
@@ -1377,13 +1468,30 @@ async function drawChainCovered(genomeID){
 			x.selectAll("rect").remove();
 			x.selectAll("line").remove();
 		})
-		d3.select("body").selectAll(".covered_range_tooltip").remove()
+		d3.select("body").selectAll(".covered_range_tooltip").remove();
+		genome1_covered_as_source_svg
+			.append("text")
+			.text("Now loading")
+			.attr("x", svg_canvas_width / 2)
+			.attr("y", 5)
+			.attr("text-anchor", "middle")
+			.attr("dominant-baseline", "central")
+			.classed('temporary_message', true)
+		genome1_covered_as_target_svg
+			.append("text")
+			.text("Now loading")
+			.attr("x", svg_canvas_width / 2)
+			.attr("y", 5)
+			.attr("text-anchor", "middle")
+			.attr("dominant-baseline", "central")
+			.classed('temporary_message', true)
+
 		//genome1 がsource
 		//const covered_range_on_genome1_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}&source-start=${genome1.leftend}&source-end=${genome1.rightend}`;
-		const source_range_on_genome1_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}`;
+		const source_range_on_genome1_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}&source-end-g=${genome1.leftend}&source-start-l=${genome1.rightend}`;
 		const source_range_on_genome1_res   = await fetch(source_range_on_genome1_query, {method: 'GET'});
 		const source_range_on_genome1_data  = await source_range_on_genome1_res.json();
-		const target_range_on_genome1_query = `http://localhost:8000/?table=chain&target-assembly=${genome1.genome_name}&target-chromosome=${genome1.chromosome_name}`;
+		const target_range_on_genome1_query = `http://localhost:8000/?table=chain&target-assembly=${genome1.genome_name}&target-chromosome=${genome1.chromosome_name}&target-end-g=${genome1.leftend}&target-start-l=${genome1.rightend}`;
 		const target_range_on_genome1_res   = await fetch(target_range_on_genome1_query, {method: 'GET'});
 		const target_range_on_genome1_data  = await target_range_on_genome1_res.json();
 
@@ -1419,27 +1527,55 @@ async function drawChainCovered(genomeID){
 		}else{
 			for (let i = 0; i < target_range_on_genome1_data.length; i++){
 				let chain   = target_range_on_genome1_data[i];
-				const left  = parseInt(chain[2]);//座標, not pixcel
-				const right = parseInt(chain[3]);//座標, not pixcel
-				if (left > genome1.rightend || right < genome1.leftend){
+				const left  = parseInt(chain[6]);//座標, not pixcel
+				const right = parseInt(chain[7]);//座標, not pixcel
+/*
+				console.log(chain);
+				console.log(left);
+				console.log(genome1.rightend);
+				console.log(right);
+				console.log(genome1.leftend);
+
+*/				if (left > genome1.rightend || right < genome1.leftend){
 				}else{
 					drawOneCoveredAsTargetRange(1, target_range_on_genome1_data[i]);
 				}
 			}
 		}
+		genome1_covered_as_source_svg.selectAll(".temporary_message").remove();
+		genome1_covered_as_target_svg.selectAll(".temporary_message").remove();
 	}else{
 		[genome2_covered_as_source_svg, genome2_covered_as_target_svg].map(function(x){
 			x.selectAll("text").remove();
 			x.selectAll("rect").remove();
 			x.selectAll("line").remove();
 		})
-		d3.select("body").selectAll(".covered_range_tooltip").remove()
+		d3.select("body").selectAll(".covered_range_tooltip").remove();
+		genome2_covered_as_source_svg
+			.append("text")
+			.text("Now loading")
+			.attr("x", svg_canvas_width / 2)
+			.attr("y", 5)
+			.attr("text-anchor", "middle")
+			.attr("dominant-baseline", "central")
+			.classed('temporary_message', true)
+		genome2_covered_as_target_svg
+			.append("text")
+			.text("Now loading")
+			.attr("x", svg_canvas_width / 2)
+			.attr("y", 5)
+			.attr("text-anchor", "middle")
+			.attr("dominant-baseline", "central")
+			.classed('temporary_message', true)
+
+
+
 		//genome2 がtarget
 		//const covered_range_on_genome2_query = `http://localhost:8000/?table=chain&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}&target-start=${genome2.leftend}&target-end=${genome2.rightend}`;
-		const source_range_on_genome2_query = `http://localhost:8000/?table=chain&source-assembly=${genome2.genome_name}&source-chromosome=${genome2.chromosome_name}`;
+		const source_range_on_genome2_query = `http://localhost:8000/?table=chain&source-assembly=${genome2.genome_name}&source-chromosome=${genome2.chromosome_name}&source-end-g=${genome2.leftend}&source-start-l=${genome2.rightend}`;
 		const source_range_on_genome2_res   = await fetch(source_range_on_genome2_query, {method: 'GET'});
 		const source_range_on_genome2_data  = await source_range_on_genome2_res.json();
-		const target_range_on_genome2_query = `http://localhost:8000/?table=chain&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}`;
+		const target_range_on_genome2_query = `http://localhost:8000/?table=chain&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}&target-end-g=${genome2.leftend}&target-start-l=${genome2.rightend}`;
 		const target_range_on_genome2_res   = await fetch(target_range_on_genome2_query, {method: 'GET'});
 		const target_range_on_genome2_data  = await target_range_on_genome2_res.json();
 
@@ -1481,9 +1617,10 @@ async function drawChainCovered(genomeID){
 				}
 			}
 		}
+		genome2_covered_as_source_svg.selectAll(".temporary_message").remove();
+		genome2_covered_as_target_svg.selectAll(".temporary_message").remove();
 
 	}
-
 }
 
 function drawOneChainRectangle(chain){
@@ -1507,7 +1644,14 @@ function drawOneChainRectangle(chain){
 	const source_end        = (parseInt(chain[3]) - source_side_genome.leftend) * source_side_genome.NtSize;
 	const target_start      = (parseInt(chain[6]) - target_side_genome.leftend) * target_side_genome.NtSize;
 	const target_end        = (parseInt(chain[7]) - target_side_genome.leftend) * target_side_genome.NtSize;
-	const length            = chain[8]
+	const length            = chain[8];
+	const rect_leftend  = Math.min(source_start, target_start);
+	const rect_rightend = Math.max(source_end, target_end);
+	if(rect_rightend < 0){
+		return null;
+	}
+
+
 	const info_text = "<table>" + 
 	`<tr><th>source assembly  </th><th>${source_assembly}</th></tr>` +
 	`<tr><th>source chromosome</th><th>${source_chromosome}</th></tr>` +
@@ -1602,14 +1746,23 @@ function drawOneChainRectangle(chain){
 
 async function drawChain(){
 	chain_svg.selectAll('polygon').remove();
-	//const chain_rectangle_area_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}&source-start=${genome1.leftend}&source-end=${genome1.rightend}&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}&target-start=${genome2.leftend}&target-end=${genome2.rightend}`;
+	chain_svg
+		.append("text")
+		.text("Now loading")
+		.attr("x", svg_canvas_width / 2)
+		.attr("y", 5)
+		.attr("text-anchor", "middle")
+		.attr("dominant-baseline", "central")
+		.classed('temporary_message', true)
 	const chain_rectangle_area_query = `http://localhost:8000/?table=chain&source-assembly=${genome1.genome_name}&source-chromosome=${genome1.chromosome_name}&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}`;
 	const chain_rectangle_area_res   = await fetch(chain_rectangle_area_query, {method: 'GET'});
 	const chain_rectangle_area_data  = await chain_rectangle_area_res.json();
 //	console.log(chain_rectangle_area_query)
-for(let i = 0; i < chain_rectangle_area_data.length; i++){
-	drawOneChainRectangle(chain_rectangle_area_data[i])
-}
+	for(let i = 0; i < chain_rectangle_area_data.length; i++){
+		drawOneChainRectangle(chain_rectangle_area_data[i])
+	}
+	chain_svg.selectAll(".temporary_message").remove();
+
 }
 
 updateScreen(1);

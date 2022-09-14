@@ -3,68 +3,9 @@
 import sys
 import argparse
 import pprint
+from chain_parser import chain_parser, chain_data
 pp = pprint.PrettyPrinter(indent=2)
 
-class paf_data():
-	def __init__(self, source_chrom, source_start, source_end, target_chrom, target_start, target_end, cigar, rev, dsc = None, color = None):
-		self.source_chrom = source_chrom
-		self.source_start = source_start
-		self.source_end = source_end
-		self.target_chrom = target_chrom
-		self.target_start = target_start
-		self.target_end = target_end
-		self.cigar = cigar
-		self.rev = rev
-		self.dsc = dsc
-
-	def __str__(self):
-		return f"source_chrom: {self.source_chrom}, source_start: {self.source_start}, source_end: {self.source_end}, target_chrom: {self.target_chrom}, target_start: {self.target_start}, target_end: {self.target_end}, cigar: {self.cigar}, rev: {self.rev}, dsc: {self.dsc}"
-
-
-def chain_parser(filename):
-	ret_array = []
-	score = 0
-	tName = ""
-	tSize = 0
-	tStart = 0
-	tEnd = 0
-	qName = ""
-	qSize = 0
-	qStrand = ""
-	qStart = 0
-	qEnd = 0
-	id_ = 0
-	source_current_pos = 0
-	target_current_pos = 0
-	with open(filename) as f:
-		for line in f:
-			if line.startswith("chain"):
-				chain, score, tName, tSize, tStrand, tStart, tEnd, qName, qSize, qStrand, qStart, qEnd, id_ = line.strip().split()
-				source_current_pos = int(tStart)
-				target_current_pos = int(qStart)
-			elif line != "\n":
-				block = line.strip().split()
-				source_start = source_current_pos
-				target_start = target_current_pos
-				source_end = source_start + int(block[0])
-				target_end = target_start + int(block[0])
-				paf_alignment_data = paf_data(
-					target_chrom = tName,
-					target_start = target_start,
-					target_end = target_end,
-					source_chrom = qName,
-					source_start = source_start,
-					source_end = source_end,
-					cigar = target_end - target_start,
-					rev = qStrand,
-					dsc = filename
-				)
-				assert(target_end - target_start == source_end - source_start), "chain file reports different length between reference and target"
-				ret_array.append(paf_alignment_data)
-				if len(block) == 3:
-					source_current_pos = source_end + int(block[1])
-					target_current_pos = target_end + int(block[2])
-	return ret_array
 
 
 """
@@ -81,6 +22,22 @@ sourceがquery側
 targetがreference側
 """
 
+"""
+		self.tName   = tName
+		self.tSize   = tSize
+		self.tStrand = tStrand
+		self.tStart  = tStart
+		self.tEnd    = tEnd
+		self.qName   = qName
+		self.qSize   = qSize
+		self.qStrand = qStrand
+		self.qStart  = qStart
+		self.qEnd    = qEnd
+		self.id      = id
+
+"""
+
+
 def main():
 	parser = argparse.ArgumentParser(description = "parsing chain file. <Source>To<Target>.")
 	parser.add_argument("source", metavar = "source", type = str, help = "source assembly name")
@@ -93,17 +50,18 @@ def main():
 
 	chain = chain_parser(chainfilename)
 	for each_chain in chain:
-		source_chromosome = each_chain.source_chrom
-		source_start = each_chain.source_start
-		source_end = each_chain.source_end
-		target_chromosome = each_chain.target_chrom
-		target_start = each_chain.target_start
-		target_end = each_chain.target_end
-		length = each_chain.cigar
-		strand = each_chain.rev
+		source_chromosome = each_chain.tName
+		source_start      = each_chain.tStart
+		source_end        = each_chain.tEnd
+		target_chromosome = each_chain.qName
+		target_start      = each_chain.qStart
+		target_end        = each_chain.qEnd
+		length            = each_chain.tEnd - each_chain.tStart
+		strand            = each_chain.qStrand
 		tmp = [source_assembly, source_chromosome, source_start, source_end, target_assembly, target_chromosome, target_start, target_end, length, strand]
 		tmp = [str(x) for x in tmp]
 		print(",".join(tmp))
+		#print(each_chain, file = sys.stderr)
 
 
 
