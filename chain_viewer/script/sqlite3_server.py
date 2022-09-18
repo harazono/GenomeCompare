@@ -7,6 +7,8 @@ import socketserver
 import urllib.parse
 from Bio import SeqIO
 import argparse
+import time
+
 
 pp = pprint.PrettyPrinter(indent=2)
 
@@ -34,6 +36,7 @@ transcript_cursor     = transcript_connection.cursor()
 
 class SQLite3Handler(s.SimpleHTTPRequestHandler):
 	def do_GET(self):
+		time_sta = time.perf_counter()
 		result = None
 		qs = urllib.parse.urlparse(self.path).query
 		qs_d = urllib.parse.parse_qs(qs)
@@ -180,7 +183,6 @@ class SQLite3Handler(s.SimpleHTTPRequestHandler):
 
 
 		result_text = json.dumps(result)
-
 		self.send_response(200)
 		self.send_header('Access-Control-Allow-Origin', '*')
 		self.send_header('Content-type', 'text/html; charset=utf-8')
@@ -188,6 +190,9 @@ class SQLite3Handler(s.SimpleHTTPRequestHandler):
 		#self.send_header('Access-Control-Allow-Origin', 'true')
 		self.end_headers()
 		self.wfile.write(result_text.encode())
+		time_end = time.perf_counter()
+		tim = time_end - time_sta
+		print(tim)
 
 
 

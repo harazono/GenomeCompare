@@ -71,7 +71,7 @@ class GenomeCoordinateInfo {
 	}
 }
 const initial_leftend  = 0
-const initial_rightend = 250000000
+const initial_rightend = 25000000
 const initial_length   = initial_rightend - initial_leftend
 const initial_center   = initial_leftend  + initial_length / 2
 const initial_NtSize   = parseFloat(svg_canvas_width) / initial_length
@@ -1103,16 +1103,16 @@ function drawOneCoveredAsSourceRange(genomeID, chain){
 	let color;//inter chainかintra chainかで色を分ける
 	if(chain[9] === "+"){
 		if(target_chromosome === source_chromosome){
-			color = "#ffb6c1"
+			color = "#ffb6c150"
 		}else{
-			color = "#da70d6"
+			color = "#da70d650"
 			offset = 10
 		}
 	}else{
 		if(target_chromosome === source_chromosome){
-			color = "#0000ff"
+			color = "#0000ff50"
 		}else{
-			color = "#00bfff"
+			color = "#00bfff50"
 			offset = 10
 		}
 	}
@@ -1310,16 +1310,16 @@ function drawOneCoveredAsTargetRange(genomeID, chain){
 	let color;//inter chainかintra chainかで色を分ける
 	if(chain[9] === "+"){
 		if(target_chromosome === source_chromosome){
-			color = "#ffb6c1"
+			color = "#ffb6c150"
 		}else{
-			color = "#da70d6"
+			color = "#da70d650"
 			offset = 10
 		}
 	}else{
 		if(target_chromosome === source_chromosome){
-			color = "#0000ff"
+			color = "#0000ff50"
 		}else{
-			color = "#00bfff"
+			color = "#00bfff50"
 			offset = 10
 		}
 	}
@@ -1503,16 +1503,12 @@ async function drawChainCovered(genomeID){
 			.attr("y", 5)
 			.attr("text-anchor", "middle")
 			.attr("dominant-baseline", "central")
+			genome1_covered_as_source_svg.selectAll(".temporary_message").remove();
+			genome1_covered_as_target_svg.selectAll(".temporary_message").remove();
 			return;
 		}else{
 			for (let i = 0; i < source_range_on_genome1_data.length; i++){
-				let chain   = source_range_on_genome1_data[i];
-				const left  = parseInt(chain[2]);//座標, not pixcel
-				const right = parseInt(chain[3]);//座標, not pixcel
-				if (left > genome1.rightend || right < genome1.leftend){
-				}else{
-					drawOneCoveredAsSourceRange(1, source_range_on_genome1_data[i]);
-				}
+				drawOneCoveredAsSourceRange(1, source_range_on_genome1_data[i]);
 			}
 		}
 		if (target_range_on_genome1_data.length == 0){
@@ -1523,23 +1519,12 @@ async function drawChainCovered(genomeID){
 			.attr("y", 5)
 			.attr("text-anchor", "middle")
 			.attr("dominant-baseline", "central")
+			genome1_covered_as_source_svg.selectAll(".temporary_message").remove();
+			genome1_covered_as_target_svg.selectAll(".temporary_message").remove();
 			return;
 		}else{
 			for (let i = 0; i < target_range_on_genome1_data.length; i++){
-				let chain   = target_range_on_genome1_data[i];
-				const left  = parseInt(chain[6]);//座標, not pixcel
-				const right = parseInt(chain[7]);//座標, not pixcel
-/*
-				console.log(chain);
-				console.log(left);
-				console.log(genome1.rightend);
-				console.log(right);
-				console.log(genome1.leftend);
-
-*/				if (left > genome1.rightend || right < genome1.leftend){
-				}else{
-					drawOneCoveredAsTargetRange(1, target_range_on_genome1_data[i]);
-				}
+				drawOneCoveredAsTargetRange(1, target_range_on_genome1_data[i]);
 			}
 		}
 		genome1_covered_as_source_svg.selectAll(".temporary_message").remove();
@@ -1568,8 +1553,6 @@ async function drawChainCovered(genomeID){
 			.attr("dominant-baseline", "central")
 			.classed('temporary_message', true)
 
-
-
 		//genome2 がtarget
 		//const covered_range_on_genome2_query = `http://localhost:8000/?table=chain&target-assembly=${genome2.genome_name}&target-chromosome=${genome2.chromosome_name}&target-start=${genome2.leftend}&target-end=${genome2.rightend}`;
 		const source_range_on_genome2_query = `http://localhost:8000/?table=chain&source-assembly=${genome2.genome_name}&source-chromosome=${genome2.chromosome_name}&source-end-g=${genome2.leftend}&source-start-l=${genome2.rightend}`;
@@ -1581,40 +1564,33 @@ async function drawChainCovered(genomeID){
 
 		if (source_range_on_genome2_data.length == 0){
 			genome2_covered_as_source_svg
-			.append("text")
-			.text("No chain in this range")
-			.attr("x", svg_canvas_width / 2)
-			.attr("y", 5)
-			.attr("text-anchor", "middle")
-			.attr("dominant-baseline", "central")
+				.append("text")
+				.text("No chain in this range")
+				.attr("x", svg_canvas_width / 2)
+				.attr("y", 5)
+				.attr("text-anchor", "middle")
+				.attr("dominant-baseline", "central")
+			genome2_covered_as_source_svg.selectAll(".temporary_message").remove();
+			genome2_covered_as_target_svg.selectAll(".temporary_message").remove();
 			return;
 		}
 		for (let i = 0; i < source_range_on_genome2_data.length; i++){
-			let chain   = source_range_on_genome2_data[i];
-			const left  = parseInt(chain[6]);
-			const right = parseInt(chain[7]);
-			if (left < genome2.rightend && right > genome2.leftend){
-				drawOneCoveredAsSourceRange(2, source_range_on_genome2_data[i])
-			}
+			drawOneCoveredAsSourceRange(2, source_range_on_genome2_data[i])
 		}
 		if (target_range_on_genome2_data.length == 0){
 			genome2_covered_as_target_svg
-			.append("text")
-			.text("No chain in this range")
-			.attr("x", svg_canvas_width / 2)
-			.attr("y", 5)
-			.attr("text-anchor", "middle")
-			.attr("dominant-baseline", "central")
+				.append("text")
+				.text("No chain in this range")
+				.attr("x", svg_canvas_width / 2)
+				.attr("y", 5)
+				.attr("text-anchor", "middle")
+				.attr("dominant-baseline", "central")
+			genome2_covered_as_source_svg.selectAll(".temporary_message").remove();
+			genome2_covered_as_target_svg.selectAll(".temporary_message").remove();
 			return;
 		}else{
 			for (let i = 0; i < target_range_on_genome2_data.length; i++){
-				let chain   = target_range_on_genome2_data[i];
-				const left  = parseInt(chain[2]);//座標, not pixcel
-				const right = parseInt(chain[3]);//座標, not pixcel
-				if (left > genome2.rightend || right < genome2.leftend){
-				}else{
-					drawOneCoveredAsTargetRange(2, target_range_on_genome2_data[i]);
-				}
+				drawOneCoveredAsTargetRange(2, target_range_on_genome2_data[i]);
 			}
 		}
 		genome2_covered_as_source_svg.selectAll(".temporary_message").remove();
@@ -1740,7 +1716,6 @@ function drawOneChainRectangle(chain){
 			e.stopPropagation();
 		}
 	})
-
 	.classed("covered_range_tooltip", true)
 }
 
